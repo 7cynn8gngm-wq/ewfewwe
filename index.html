@@ -1,0 +1,4263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кинотеатр "КиноМир"</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet" crossorigin="anonymous">
+</head>
+<style>
+    /* ===== ОБНОВЛЕННЫЕ CSS ПЕРЕМЕННЫЕ ===== */
+    :root {
+        /* ОБНОВЛЕННАЯ ЦВЕТОВАЯ ПАЛИТРА ДЛЯ КИНОТЕАТРА */
+        --primary-blue: #0f1c2e;
+        --primary-blue-light: #1a2d4a;
+        --accent-orange: #e50914;
+        --accent-orange-light: #ff4d4d;
+        --accent-teal: #00b4d8;
+        --accent-purple: #6a0dad;
+        --background: #0a0f1c;
+        --background-gradient: linear-gradient(135deg, #0a0f1c 0%, #1a2d4a 100%);
+        --text-primary: #ffffff;
+        --text-secondary: #b0b8c5;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+        --white: #FFFFFF;
+        --gray-light: #1e293b;
+        --gray-medium: #334155;
+        
+        /* ТИПОГРАФИКА */
+        --font-heading: 'Montserrat', sans-serif;
+        --font-body: 'Open Sans', sans-serif;
+        
+        /* ТЕНИ И СКРУГЛЕНИЯ */
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.5);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.7);
+        --shadow-lg: 0 10px 25px rgba(0,0,0,0.8);
+        --shadow-xl: 0 20px 40px rgba(0,0,0,0.9);
+        --border-radius: 10px;
+        --border-radius-lg: 16px;
+    }
+
+    /* ===== БАЗОВЫЕ СТИЛИ ===== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 80px;
+    }
+
+    body {
+        animation: pageFade 0.5s ease-in-out;
+        font-family: var(--font-body);
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--text-primary);
+        background: var(--background-gradient);
+        padding-top: 80px;
+    }
+
+    /* ПЛАВАЮЩИЕ ЭЛЕМЕНТЫ ДЛЯ ФОНА */
+    .floating-elements {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .floating-element {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(229, 9, 20, 0.05);
+        animation: float 15s ease-in-out infinite;
+    }
+
+    /* ===== ТИПОГРАФИКА ===== */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-heading);
+        font-weight: 600;
+        line-height: 1.3;
+        margin-bottom: 1rem;
+    }
+
+    h1 { 
+        font-size: 2.5rem; 
+        font-weight: 700; 
+    }
+    
+    h2 { 
+        font-size: 2rem; 
+    }
+    
+    h3 { 
+        font-size: 1.5rem; 
+    }
+
+    p {
+        margin-bottom: 1rem;
+        color: var(--text-secondary);
+    }
+
+    a {
+        color: var(--accent-orange);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    a:hover {
+        color: var(--accent-orange-light);
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        color: var(--text-primary);
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal));
+        border-radius: 2px;
+    }
+
+    /* ВЫРАВНИВАНИЕ ТЕКСТОВ ПО ШИРИНЕ - ДОБАВЛЕНО */
+    .hero-subtitle {
+        text-align: justify;
+        text-justify: inter-word;
+        hyphens: auto;
+        line-height: 1.7;
+    }
+
+    .movie-description {
+        text-align: justify;
+        text-justify: inter-word;
+        hyphens: auto;
+        line-height: 1.6;
+    }
+
+    .service-card p {
+        text-align: justify;
+        text-justify: inter-word;
+        hyphens: auto;
+        line-height: 1.6;
+    }
+
+    .news-card p {
+        text-align: justify;
+        text-justify: inter-word;
+        hyphens: auto;
+        line-height: 1.6;
+    }
+
+    /* Стили для обновляемой даты */
+    .current-date {
+        color: var(--accent-teal);
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .schedule-note {
+        margin-top: 10px;
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+    }
+
+    .schedule-note i {
+        color: var(--accent-teal);
+        margin-right: 5px;
+    }
+
+    /* Анимация обновления даты */
+    .date-updating {
+        animation: datePulse 1s ease;
+    }
+
+    @keyframes datePulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.7; }
+        100% { opacity: 1; }
+    }
+
+    /* ===== АНИМАЦИИ ===== */
+    @keyframes pageFade {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(10deg); }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 5px rgba(229, 9, 20, 0.4); }
+        50% { box-shadow: 0 0 20px rgba(229, 9, 20, 0.8); }
+    }
+
+    .page-transition {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--primary-blue);
+        z-index: 9999;
+        transform: scaleY(0);
+        transform-origin: bottom;
+        transition: transform 0.6s ease-in-out;
+    }
+
+    .page-transition.active {
+        transform: scaleY(1);
+        transform-origin: top;
+    }
+
+    /* ===== КОМПОНЕНТЫ ===== */
+    /* Кнопки */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
+        border: none;
+        border-radius: var(--border-radius);
+        font-family: var(--font-heading);
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        gap: 8px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-orange-light) 100%);
+        color: var(--white);
+        box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(229, 9, 20, 0.4);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+        color: var(--white);
+        box-shadow: 0 4px 15px rgba(15, 28, 46, 0.3);
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(15, 28, 46, 0.4);
+    }
+
+    .btn-outline {
+        background-color: transparent;
+        border: 2px solid var(--accent-orange);
+        color: var(--accent-orange);
+    }
+
+    .btn-outline:hover {
+        background-color: var(--accent-orange);
+        color: var(--white);
+        transform: translateY(-2px);
+    }
+
+    .btn-block { display: block; width: 100%; justify-content: center; }
+    .btn-sm { padding: 8px 16px; font-size: 0.875rem; height: fit-content; white-space: nowrap; }
+    .btn-lg { padding: 16px 32px; font-size: 1.125rem; }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .btn:disabled:hover {
+        transform: none;
+    }
+
+    /* Карточки */
+    .service-card {
+        background: var(--gray-light);
+        border-radius: var(--border-radius-lg);
+        padding: 2.5rem 2rem;
+        text-align: center;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        border: 1px solid var(--gray-medium);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        animation: slideInUp 0.6s ease;
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal), var(--accent-purple));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease;
+    }
+
+    .service-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .service-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .service-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-orange-light) 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: var(--white);
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+    }
+
+    .service-card:hover .service-icon {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 6px 20px rgba(15, 28, 46, 0.4);
+    }
+
+    .service-title {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+        text-align: center;
+        width: 100%;
+        font-weight: 600;
+    }
+
+    .service-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+        .news-card {
+        background: var(--gray-light);
+        border-radius: var(--border-radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+        transition: all 0.4s ease;
+        position: relative;
+        animation: slideInUp 0.7s ease;
+        border: 1px solid var(--gray-medium);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .news-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal), var(--accent-purple));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease;
+        z-index: 2;
+    }
+
+    .news-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .news-card:hover {
+        transform: translateY(-10px) rotate(1deg);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .news-image {
+        width: 100%;
+        height: 220px;
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 3.5rem;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .news-image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(229, 9, 20, 0.1), rgba(0, 180, 216, 0.1));
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .news-card:hover .news-image::before {
+        opacity: 1;
+    }
+
+    .news-image::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+        transform: rotate(45deg) translate(-20%, -20%);
+        transition: transform 0.6s ease;
+    }
+
+    .news-card:hover .news-image::after {
+        transform: rotate(45deg) translate(20%, 20%);
+    }
+
+    .news-content {
+        padding: 2rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background: var(--gray-light);
+    }
+
+    .news-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 2rem;
+        right: 2rem;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gray-medium), transparent);
+    }
+
+    .news-date {
+        font-size: 0.875rem;
+        color: var(--accent-teal);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+    }
+
+    .news-date i {
+        color: var(--accent-orange);
+    }
+
+    .news-title {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        line-height: 1.4;
+        color: var(--text-primary);
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+    }
+
+    .news-title::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent-orange);
+        transition: width 0.4s ease;
+    }
+
+    .news-card:hover .news-title::after {
+        width: 100%;
+    }
+
+    .news-card p {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+        text-align: justify;
+        text-justify: inter-word;
+        hyphens: auto;
+        flex-grow: 1;
+    }
+
+    .news-link {
+        font-weight: 600;
+        font-size: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--accent-orange);
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 0.5rem 0;
+        align-self: flex-start;
+    }
+
+    .news-link::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent-teal);
+        transition: width 0.3s ease;
+    }
+
+    .news-link:hover {
+        color: var(--accent-teal);
+        gap: 12px;
+    }
+
+    .news-link:hover::before {
+        width: 100%;
+    }
+
+     /* Специальные стили для разных типов новостей */
+    .news-card:nth-child(1) .news-image {
+        background: linear-gradient(135deg, #e50914 0%, #ff4d4d 100%);
+    }
+
+    .news-card:nth-child(2) .news-image {
+        background: linear-gradient(135deg, #00b4d8 0%, #6a0dad 100%);
+    }
+
+    .news-card:nth-child(3) .news-image {
+        background: linear-gradient(135deg, #1a2d4a 0%, #0f1c2e 100%);
+    }
+
+    /* Анимация появления карточек с задержкой */
+    .news-card:nth-child(1) { animation-delay: 0.1s; }
+    .news-card:nth-child(2) { animation-delay: 0.2s; }
+    .news-card:nth-child(3) { animation-delay: 0.3s; }
+
+    /* Бейджи для новостей */
+    .news-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--accent-orange);
+        color: var(--white);
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        z-index: 3;
+        box-shadow: 0 2px 10px rgba(229, 9, 20, 0.3);
+    }
+
+    /* Адаптивность для новостей */
+    @media (max-width: 768px) {
+        .news-card:hover {
+            transform: translateY(-5px);
+            rotate: 0deg;
+        }
+        
+        .news-image {
+            height: 180px;
+            font-size: 3rem;
+        }
+        
+        .news-content {
+            padding: 1.5rem;
+        }
+    }
+
+    /* ===== СЕТКА И КОНТЕЙНЕРЫ ===== */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 0;
+        flex-wrap: nowrap;
+        min-height: 80px;
+    }
+
+    .hero-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    .news-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .footer-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        margin-bottom: 2rem;
+    }
+
+    .footer-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .footer-column:first-child {
+        max-width: 400px;
+    }
+
+    .footer-links {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    /* ===== СЕКЦИИ ===== */
+    /* Шапка */
+    header {
+        background: rgba(15, 28, 46, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: var(--shadow-md);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+
+    .logo-text {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        position: relative;
+        display: inline-block;
+    }
+
+    .logo-text::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal));
+        transition: width 0.5s ease;
+    }
+
+    .logo-text:hover::after {
+        width: 100%;
+    }
+
+    .logo-accent {
+        background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--accent-orange);
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    nav {
+        display: contents;
+    }
+
+    .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+        margin: 0 auto;
+        padding: 0 2rem;
+        flex-shrink: 1;
+        flex-wrap: nowrap;
+        justify-content: center;
+    }
+
+    .nav-menu li {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    .nav-menu a {
+        font-weight: 500;
+        color: var(--text-primary);
+        position: relative;
+        padding: 0.5rem 0;
+        white-space: nowrap;
+    }
+
+    .nav-menu a:hover {
+        color: var(--accent-orange);
+    }
+
+    .nav-menu a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: var(--accent-orange);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .nav-menu a:hover::after {
+        transform: scaleX(1);
+    }
+
+    .nav-link.active {
+        color: var(--accent-orange);
+        position: relative;
+    }
+
+    .nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: var(--accent-orange);
+        transform: scaleX(1);
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-shrink: 0;
+        min-width: fit-content;
+    }
+
+    .phone-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: var(--text-primary);
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: color 0.3s ease;
+    }
+
+    .phone-link:hover {
+        color: var(--accent-orange);
+    }
+
+    /* Герой-секция */
+    .hero {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+        padding: 100px 0;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    .hero::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -30%;
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        line-height: 1.2;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        animation: slideInUp 0.6s ease;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 2.5rem;
+        line-height: 1.7;
+        animation: slideInUp 0.7s ease;
+        text-align: justify;
+        text-justify: inter-word;
+        hyphens: auto;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        animation: slideInUp 0.8s ease;
+    }
+
+    .hero-image-container {
+        width: 100%;
+        height: 350px;
+        border-radius: var(--border-radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-xl);
+        position: relative;
+        animation: slideInUp 0.9s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        transition: transform 0.5s ease;
+    }
+
+    .hero-img:hover {
+        transform: scale(1.05);
+    }
+
+    .hero-placeholder {
+        width: 100%;
+        height: 350px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
+        border-radius: var(--border-radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 8rem;
+        box-shadow: var(--shadow-xl);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* Сервисы */
+    .services {
+        padding: 100px 0;
+        background-color: var(--gray-light);
+    }
+
+    /* Новости */
+    .news {
+        padding: 100px 0;
+        background-color: var(--background);
+    }
+
+    /* Подвал */
+    footer {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, #0a0f1c 100%);
+        color: var(--white);
+        padding: 3rem 0 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    footer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,0 L1000,100 L0,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+        background-size: cover;
+    }
+
+    .footer-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .footer-column:first-child {
+        max-width: 400px;
+    }
+
+    .footer-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .footer-title {
+        color: var(--white);
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+        position: relative;
+        display: inline-block;
+    }
+
+    .footer-title::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 40px;
+        height: 2px;
+        background: var(--accent-orange);
+    }
+
+    .footer-column p {
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 0;
+    }
+
+    .footer-contact {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 1rem;
+        line-height: 1.5;
+        transition: color 0.3s ease;
+    }
+
+    .footer-contact:hover {
+        color: var(--white);
+    }
+
+    .footer-contact i {
+        margin-top: 2px;
+        flex-shrink: 0;
+        color: var(--accent-orange);
+    }
+
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 2rem;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.6);
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Модальные окна */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal.show {
+        opacity: 1;
+    }
+
+    .modal-content {
+        background-color: var(--gray-light);
+        margin: 5% auto;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-xl);
+        width: 90%;
+        max-width: 500px;
+        transform: translateY(-50px);
+        transition: transform 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .modal.show .modal-content {
+        transform: translateY(0);
+    }
+
+    .modal-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal), var(--accent-purple));
+    }
+
+    .modal-header {
+        position: relative;
+        padding: 25px 60px 25px 60px;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .modal-title {
+        margin: 0;
+        text-align: center;
+        flex: 1;
+        width: 100%;
+        color: var(--text-primary);
+    }
+
+    .close {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        background: none;
+        border: none;
+        color: #b0b8c5;
+        transition: all 0.3s ease;
+    }
+
+    .close:hover {
+        color: var(--accent-orange);
+        background-color: rgba(0,0,0,0.1);
+        border-radius: 50%;
+    }
+
+    .modal-body {
+        padding: 2rem;
+    }
+
+    .auth-tabs {
+        display: flex;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid var(--gray-medium);
+    }
+
+    .tab-link {
+        flex: 1;
+        padding: 1rem;
+        background: none;
+        border: none;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .tab-link.active {
+        color: var(--accent-orange);
+    }
+
+    .tab-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: var(--accent-orange);
+    }
+
+    .tab-link:hover {
+        color: var(--accent-orange);
+    }
+
+    .auth-form {
+        display: none;
+    }
+
+    .auth-form.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+        display: block;
+    }
+
+    .form-control {
+        padding: 14px 16px;
+        border: 2px solid var(--gray-medium);
+        border-radius: var(--border-radius);
+        font-family: var(--font-body);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        background: var(--gray-light);
+        color: var(--text-primary);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--accent-orange);
+        box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .password-container {
+        position: relative;
+    }
+
+    .input-with-icon {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-with-icon .form-control {
+        padding-right: 40px;
+        width: 100%;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 10px;
+        cursor: pointer;
+        color: var(--text-secondary);
+        z-index: 10;
+        background: none;
+        border: none;
+        padding: 5px;
+        transition: color 0.3s ease;
+    }
+
+    .password-toggle:hover {
+        color: var(--text-primary);
+    }
+
+    .password-hint {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-top: 0.5rem;
+        line-height: 1.4;
+    }
+
+    .password-error {
+        font-size: 0.75rem;
+        color: var(--error);
+        margin-top: 0.5rem;
+        display: none;
+    }
+
+    .password-error.show {
+        display: block;
+    }
+
+    .form-actions {
+        margin-top: 1.5rem;
+    }
+
+    /* Стили для секции фильмов и расписания */
+    .movies-schedule {
+        padding: 100px 0;
+        background-color: var(--primary-blue);
+    }
+
+    .date-filter {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .date-scroll {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        padding: 0.5rem;
+    }
+
+    .date-btn {
+        padding: 0.75rem 1.5rem;
+        background: var(--gray-light);
+        border: 2px solid var(--gray-medium);
+        border-radius: var(--border-radius);
+        color: var(--text-primary);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .date-btn.active,
+    .date-btn:hover {
+        background: var(--accent-orange);
+        border-color: var(--accent-orange);
+        color: var(--white);
+    }
+
+    .movies-container {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .movie-card {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 2rem;
+        background: var(--gray-light);
+        border-radius: var(--border-radius-lg);
+        padding: 2rem;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        animation: slideInUp 0.6s ease;
+    }
+
+    .movie-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .movie-poster {
+        position: relative;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        height: 450px;
+    }
+
+    .movie-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .movie-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--accent-orange);
+        color: var(--white);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .movie-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .movie-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+    }
+
+    .movie-meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+        /* Подсветка элементов в карточках фильмов */
+    .movie-genre,
+    .movie-duration,
+    .movie-age {
+        background: var(--primary-blue-light);
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.875rem;
+        color: var(--text-primary);
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 2px solid var(--accent-teal);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .movie-genre::before,
+    .movie-duration::before,
+    .movie-age::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .movie-genre:hover::before,
+    .movie-duration:hover::before,
+    .movie-age:hover::before {
+        left: 100%;
+    }
+
+    .movie-genre:hover,
+    .movie-duration:hover,
+    .movie-age:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
+        border-color: var(--accent-orange);
+    }
+
+    /* Особый стиль для возрастного рейтинга */
+    .movie-age {
+        background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-purple) 100%);
+        color: var(--white);
+        border-color: var(--accent-orange);
+        animation: pulse-glow 2s infinite;
+    }
+
+    /* Для жанра - другой градиент */
+    .movie-genre {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+        border-color: var(--accent-teal);
+    }
+
+    /* Для длительности - третий вариант */
+    .movie-duration {
+        background: linear-gradient(135deg, var(--gray-light) 0%, var(--gray-medium) 100%);
+        border-color: var(--accent-orange-light);
+    }
+
+    .movie-age {
+        background: var(--accent-teal);
+        color: var(--white);
+    }
+
+    .movie-description {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        text-align: justify;
+        text-justify: inter-word;
+        hyphens: auto;
+    }
+
+    .schedule-container h4 {
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    .schedule-times {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+
+    .time-slot {
+        padding: 0.75rem 1.25rem;
+        background: var(--primary-blue);
+        border: 2px solid var(--gray-medium);
+        border-radius: var(--border-radius);
+        color: var(--text-primary);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .time-slot:hover,
+    .time-slot.active {
+        background: var(--accent-orange);
+        border-color: var(--accent-orange);
+        color: var(--white);
+    }
+
+    .movie-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: auto;
+    }
+
+    /* Стили для модального окна бронирования */
+    .booking-modal {
+        max-width: 800px;
+    }
+
+    .booking-info {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--gray-medium);
+    }
+
+    .booking-info h3 {
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+    }
+
+    .booking-details {
+        display: flex;
+        gap: 1.5rem;
+        color: var(--text-secondary);
+    }
+
+    .seats-selection {
+        margin-bottom: 2rem;
+    }
+
+    .cinema-hall {
+        text-align: center;
+    }
+
+    .screen {
+        background: linear-gradient(90deg, var(--accent-teal), var(--accent-purple));
+        color: var(--white);
+        padding: 1rem;
+        margin-bottom: 2rem;
+        border-radius: 5px;
+        font-weight: 600;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .seats-grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 8px;
+        margin-bottom: 2rem;
+        justify-content: center;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .seat {
+        width: 30px;
+        height: 30px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .seat.available {
+        background: var(--success);
+        color: var(--white);
+    }
+
+    .seat.selected {
+        background: var(--accent-orange);
+        color: var(--white);
+    }
+
+    .seat.occupied {
+        background: var(--gray-medium);
+        cursor: not-allowed;
+    }
+
+    .seat.available:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+
+    .seats-legend {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+    }
+
+    .booking-summary {
+        border-top: 1px solid var(--gray-medium);
+        padding-top: 1.5rem;
+    }
+
+    .summary-details h4 {
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    .selected-seats {
+        margin-bottom: 1rem;
+        min-height: 30px;
+    }
+
+    .total-price {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+    }
+
+    /* Стили для модального окна трейлера */
+    .trailer-modal {
+        max-width: 900px;
+    }
+
+    .trailer-modal .modal-content {
+        max-width: 900px;
+        width: 95%;
+    }
+
+    .trailer-container {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%; /* 16:9 соотношение сторон */
+        background: var(--primary-blue);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+    }
+
+    .trailer-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* Стили для локального видео */
+    .video-player {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .trailer-placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        background: var(--primary-blue);
+    }
+
+    .trailer-placeholder i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: var(--accent-orange);
+    }
+
+    /* ===== АДАПТИВНОСТЬ ===== */
+    @media (max-width: 1024px) {
+        .hero-container {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            text-align: center;
+        }
+        
+        .hero-actions {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .header-container {
+            flex-wrap: wrap;
+        }
+        
+        .mobile-menu-btn {
+            display: block;
+            order: 1;
+        }
+        
+        .logo {
+            order: 0;
+        }
+        
+        .header-actions {
+            order: 2;
+            width: 100%;
+            justify-content: center;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .nav-menu {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            text-align: center;
+            gap: 0;
+            order: 3;
+            margin-top: 1rem;
+            padding: 0;
+        }
+        
+        .nav-menu.active {
+            display: flex;
+        }
+        
+        .nav-menu li {
+            width: 100%;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+        
+        .nav-menu a {
+            display: block;
+            padding: 1rem;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .btn {
+            width: 100%;
+            max-width: 300px;
+            justify-content: center;
+        }
+        
+        .services-grid,
+        .news-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .header-actions.active {
+            display: flex;
+        }
+        
+        .hero-image-container {
+            height: 250px;
+        }
+        
+        .footer-container {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .footer-column:first-child {
+            max-width: none;
+        }
+        
+        .footer-contact {
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .phone-link span {
+            display: none;
+        }
+        
+        .phone-link::after {
+            content: "Телефон";
+            font-size: 0.875rem;
+        }
+
+        .movie-card {
+            grid-template-columns: 1fr;
+        }
+        
+        .movie-poster {
+            height: 400px;
+        }
+        
+        .seats-grid {
+            grid-template-columns: repeat(8, 1fr);
+        }
+        
+        .booking-details {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .seats-legend {
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            padding: 0 1rem;
+        }
+        
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+        }
+        
+        .hero-image-container {
+            height: 200px;
+        }
+        
+        .service-card,
+        .news-card {
+            padding: 1.5rem;
+        }
+
+        .header-actions.active .phone-link span {
+            display: inline;
+        }
+        
+        .header-actions.active .phone-link::after {
+            content: none;
+        }
+
+        .schedule-times {
+            justify-content: center;
+        }
+        
+        .movie-actions {
+            flex-direction: column;
+        }
+        
+        .seats-grid {
+            grid-template-columns: repeat(6, 1fr);
+        }
+    }
+
+    /* ДОСТУПНОСТЬ */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    .btn:focus,
+    .form-control:focus,
+    .mobile-menu-btn:focus {
+        outline: 2px solid var(--accent-orange);
+        outline-offset: 2px;
+    }
+
+    /* Добавляем в существующий CSS */
+
+/* Стили для уведомлений */
+.booking-success-notification {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    background: var(--success);
+    color: white;
+    padding: 20px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    z-index: 10000;
+    max-width: 400px;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+}
+
+.booking-success-notification.show {
+    transform: translateX(0);
+}
+
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.notification-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.notification-text h3 {
+    margin-bottom: 10px;
+    color: white;
+}
+
+.notification-text p {
+    margin-bottom: 5px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    align-self: flex-start;
+}
+
+.tickets-count {
+    margin: 10px 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+}
+
+/* Стили для фильмов, которые скоро выйдут */
+.movie-card .schedule-container h4 {
+    color: var(--accent-teal);
+}
+
+.movie-card .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.poster-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 3rem;
+}
+
+/* Добавьте в CSS для лучшего отображения */
+.no-seats {
+    color: var(--text-secondary);
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+}
+
+.tickets-count {
+    background: rgba(0, 180, 216, 0.1);
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    margin-top: 10px;
+    font-weight: 600;
+    color: var(--accent-teal);
+}
+
+/* Подсветка для выбранного времени */
+.time-slot.active {
+    background: var(--accent-orange);
+    border-color: var(--accent-orange);
+    color: var(--white);
+    transform: scale(1.05);
+}
+
+
+    .movie-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: auto;
+    }
+
+    /* Стили для модального окна бронирования */
+    .booking-modal {
+        max-width: 800px;
+    }
+
+    .booking-info {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--gray-medium);
+    }
+
+    .booking-info h3 {
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+    }
+
+    .booking-details {
+        display: flex;
+        gap: 1.5rem;
+        color: var(--text-secondary);
+    }
+
+    .seats-selection {
+        margin-bottom: 2rem;
+    }
+
+    .cinema-hall {
+        text-align: center;
+    }
+
+    .screen {
+        background: linear-gradient(90deg, var(--accent-teal), var(--accent-purple));
+        color: var(--white);
+        padding: 1rem;
+        margin-bottom: 2rem;
+        border-radius: 5px;
+        font-weight: 600;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .seats-grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 8px;
+        margin-bottom: 2rem;
+        justify-content: center;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .seat {
+        width: 30px;
+        height: 30px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .seat.available {
+        background: var(--success);
+        color: var(--white);
+    }
+
+    .seat.selected {
+        background: var(--accent-orange);
+        color: var(--white);
+    }
+
+    .seat.occupied {
+        background: var(--gray-medium);
+        cursor: not-allowed;
+    }
+
+    .seat.available:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+
+    .seats-legend {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+    }
+
+    .booking-summary {
+        border-top: 1px solid var(--gray-medium);
+        padding-top: 1.5rem;
+    }
+
+    .summary-details h4 {
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    .selected-seats {
+        margin-bottom: 1rem;
+        min-height: 30px;
+    }
+
+    .total-price {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+    }
+
+    /* Стили для модального окна трейлера */
+    .trailer-modal {
+        max-width: 900px;
+    }
+
+    .trailer-modal .modal-content {
+        max-width: 900px;
+        width: 95%;
+    }
+
+    .trailer-container {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%; /* 16:9 соотношение сторон */
+        background: var(--primary-blue);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+    }
+
+    .trailer-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* Стили для локального видео */
+    .video-player {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .trailer-placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        background: var(--primary-blue);
+    }
+
+    .trailer-placeholder i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: var(--accent-orange);
+    }
+
+    /* ===== АДАПТИВНОСТЬ ===== */
+    @media (max-width: 1024px) {
+        .hero-container {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            text-align: center;
+        }
+        
+        .hero-actions {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .header-container {
+            flex-wrap: wrap;
+        }
+        
+        .mobile-menu-btn {
+            display: block;
+            order: 1;
+        }
+        
+        .logo {
+            order: 0;
+        }
+        
+        .header-actions {
+            order: 2;
+            width: 100%;
+            justify-content: center;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .nav-menu {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            text-align: center;
+            gap: 0;
+            order: 3;
+            margin-top: 1rem;
+            padding: 0;
+        }
+        
+        .nav-menu.active {
+            display: flex;
+        }
+        
+        .nav-menu li {
+            width: 100%;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+        
+        .nav-menu a {
+            display: block;
+            padding: 1rem;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .btn {
+            width: 100%;
+            max-width: 300px;
+            justify-content: center;
+        }
+        
+        .services-grid,
+        .news-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .header-actions.active {
+            display: flex;
+        }
+        
+        .hero-image-container {
+            height: 250px;
+        }
+        
+        .footer-container {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .footer-column:first-child {
+            max-width: none;
+        }
+        
+        .footer-contact {
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .phone-link span {
+            display: none;
+        }
+        
+        .phone-link::after {
+            content: "Телефон";
+            font-size: 0.875rem;
+        }
+
+        .movie-card {
+            grid-template-columns: 1fr;
+        }
+        
+        .movie-poster {
+            height: 400px;
+        }
+        
+        .seats-grid {
+            grid-template-columns: repeat(8, 1fr);
+        }
+        
+        .booking-details {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .seats-legend {
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            padding: 0 1rem;
+        }
+        
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+        }
+        
+        .hero-image-container {
+            height: 200px;
+        }
+        
+        .service-card,
+        .news-card {
+            padding: 1.5rem;
+        }
+
+        .header-actions.active .phone-link span {
+            display: inline;
+        }
+        
+        .header-actions.active .phone-link::after {
+            content: none;
+        }
+
+        .schedule-times {
+            justify-content: center;
+        }
+        
+        .movie-actions {
+            flex-direction: column;
+        }
+        
+        .seats-grid {
+            grid-template-columns: repeat(6, 1fr);
+        }
+    }
+
+    /* ДОСТУПНОСТЬ */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    .btn:focus,
+    .form-control:focus,
+    .mobile-menu-btn:focus {
+        outline: 2px solid var(--accent-orange);
+        outline-offset: 2px;
+    }
+
+    /* Добавляем в существующий CSS */
+
+/* Стили для уведомлений */
+.booking-success-notification {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    background: var(--success);
+    color: white;
+    padding: 20px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    z-index: 10000;
+    max-width: 400px;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+}
+
+.booking-success-notification.show {
+    transform: translateX(0);
+}
+
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.notification-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.notification-text h3 {
+    margin-bottom: 10px;
+    color: white;
+}
+
+.notification-text p {
+    margin-bottom: 5px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    align-self: flex-start;
+}
+
+.tickets-count {
+    margin: 10px 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+}
+
+/* Стили для фильмов, которые скоро выйдут */
+.movie-card .schedule-container h4 {
+    color: var(--accent-teal);
+}
+
+.movie-card .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.poster-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 3rem;
+}
+
+/* Добавьте в CSS для лучшего отображения */
+.no-seats {
+    color: var(--text-secondary);
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+}
+
+.tickets-count {
+    background: rgba(0, 180, 216, 0.1);
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    margin-top: 10px;
+    font-weight: 600;
+    color: var(--accent-teal);
+}
+
+/* Подсветка для выбранного времени */
+.time-slot.active {
+    background: var(--accent-orange);
+    border-color: var(--accent-orange);
+    color: var(--white);
+    transform: scale(1.05);
+}
+
+    /* Настройки для изображения КИНОМИР.png */
+    .hero-image-container {
+        width: 100%;
+        height: 350px; /* Оставляем прежнюю высоту */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain; /* Чтобы все изображение было видно */
+        transition: transform 0.5s ease;
+    }
+
+    /* Убедимся, что контейнер героя не меняется */
+    .hero-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Оставляем оригинальные пропорции */
+        gap: 4rem;
+        align-items: center;
+    }
+
+        /* Стили для кнопки "Скоро в продаже" - идентичны кнопке "Забронировать" */
+    .soon-btn {
+        background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-orange-light) 100%);
+        color: var(--white);
+        box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+        border: none;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .soon-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .soon-btn:hover::before {
+        left: 100%;
+    }
+
+    .soon-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(229, 9, 20, 0.4);
+        background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-orange-light) 100%);
+        color: var(--white);
+    }
+
+    /* Обновленные стили для уведомлений */
+.booking-success-notification {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    background: var(--success);
+    color: white;
+    padding: 20px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    z-index: 10000;
+    max-width: 400px;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+}
+
+.booking-success-notification.show {
+    transform: translateX(0);
+}
+
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.notification-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.notification-text h3 {
+    margin-bottom: 10px;
+    color: white;
+}
+
+.notification-text p {
+    margin-bottom: 5px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    align-self: flex-start;
+}
+
+.tickets-count {
+    margin: 10px 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+}
+
+/* Стили для отображения цены за билет */
+.price-per-ticket {
+    color: var(--accent-teal);
+    font-weight: 600;
+    margin: 5px 0;
+}
+
+.tickets-summary {
+    background: rgba(0, 180, 216, 0.1);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    margin: 10px 0;
+}
+</style>
+<body>
+    <!-- Плавающие элементы фона -->
+    <div class="floating-elements" id="floatingElements"></div>
+    
+    <div class="page-transition"></div>
+
+    <!-- Шапка сайта -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <div class="logo-text">Кинотеатр <span class="logo-accent">"КиноМир"</span></div>
+            </div>
+
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <ul class="nav-menu">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="#services">Фильмы</a></li>
+                <li><a href="#news">Новости</a></li>
+                <li><a href="#contacts">Контакты</a></li>
+            </ul>
+
+            <div class="header-actions">
+                <a href="tel:+74951234567" class="phone-link">
+                    <i class="fas fa-phone"></i> +7 (495) 123-45-67
+                </a>
+                <button class="btn btn-primary open-modal-btn">
+                    <i class="fas fa-user"></i> Личный кабинет
+                </button>
+            </div>
+        </div>
+    </header>
+
+        <!-- Герой-секция -->
+    <section class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">МИР КИНО В ВАШЕМ ГОРОДЕ</h1>
+                <p class="hero-subtitle">Погрузитесь в атмосферу кино с премьерами, уютными залами и технологиями 4K, Dolby Atmos. Наслаждайтесь комфортом премиум-кресел и безупречным сервисом.
+                <div class="hero-actions">
+                    <a href="#movies" class="btn btn-primary btn-lg">
+                        <i class="fas fa-film"></i> Смотреть фильмы
+                    </a>
+                    <a href="#movies" class="btn btn-outline btn-lg">
+                        <i class="fas fa-calendar-alt"></i> Расписание
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="hero-image-container">
+                    <img src="images/КИНОМИР.png" alt="Кинотеатр КиноМир" class="hero-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция фильмов -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">СЕАНСЫ И ФИЛЬМЫ</h2>
+            <div class="services-grid">
+                <a href="#movies" class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <h3 class="service-title">Премьеры недели</h3>
+                    <p>Самые ожидаемые новинки мирового кинопроката уже в нашем кинотеатре</p>
+                </a>
+                <a href="#movies" class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3 class="service-title">3D Фильмы</h3>
+                    <p>Погрузитесь в мир объемного кино с нашими современными 3D технологиями</p>
+                </a>
+                <a href="#movies" class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-couch"></i>
+                    </div>
+                    <h3 class="service-title">Комфортные залы</h3>
+                    <p>Удобные кресла, современное оборудование и идеальный звук для полного погружения</p>
+                </a>
+                <a href="#movies" class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <h3 class="service-title">Бронирование онлайн</h3>
+                    <p>Забронируйте билеты заранее и выберите лучшие места без очередей</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция фильмов с расписанием -->
+    <section class="movies-schedule" id="movies">
+        <div class="container">
+            <h2 class="section-title">ФИЛЬМЫ И РАСПИСАНИЕ</h2>
+            
+            <!-- Фильтры по дате -->
+            <div class="date-filter">
+                <div class="date-scroll">
+                    <button class="date-btn active" data-date="today">Сегодня</button>
+                    <button class="date-btn" data-date="tomorrow">Завтра</button>
+                    <button class="date-btn" data-date="day-after">Послезавтра</button>
+                </div>
+            </div>
+            
+            <!-- Список фильмов -->
+            <div class="movies-container" id="moviesContainer">
+                <!-- Фильмы будут загружены динамически из данных personal.html -->
+            </div>
+        </div>
+    </section>
+
+        <!-- В секции новостей index.html -->
+<section class="news" id="news">
+    <div class="container">
+        <h2 class="section-title">НОВОСТИ И АКЦИИ</h2>
+        <div class="news-grid">
+            <article class="news-card">
+                <div class="news-badge">АКЦИЯ</div>
+                <div class="news-image">
+                    <i class="fas fa-percent"></i>
+                </div>
+                <div class="news-content">
+                    <h3 class="news-title">Скидка 20% в будние дни</h3>
+                    <div class="news-date"><i class="fas fa-calendar-alt"></i> 15 ноября 2025</div>
+                    <p>Специальное предложение: скидка 20% на все сеансы с понедельника по четверг. Идеальная возможность насладиться любимыми фильмами по выгодной цене!</p>
+                    <a href="news.html#discount" class="news-link">Подробнее <i class="fas fa-arrow-right"></i></a>
+            </article>
+            <article class="news-card">
+                <div class="news-badge">НОВИНКА</div>
+                <div class="news-image">
+                    <i class="fas fa-couch"></i>
+                </div>
+                <div class="news-content">
+                    <h3 class="news-title">Новый зал премиум-класса</h3>
+                    <div class="news-date"><i class="fas fa-calendar-alt"></i> 5 ноября 2025</div>
+                    <p>Открытие нового зала с креслами повышенной комфортности, улучшенной акустикой и панорамным экраном. Погрузитесь в кино с максимальным комфортом!</p>
+                    <a href="news.html#new-hall" class="news-link">Подробнее <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+            <article class="news-card">
+                <div class="news-badge">СОБЫТИЕ</div>
+                <div class="news-image">
+                    <i class="fas fa-film"></i>
+                </div>
+                <div class="news-content">
+                    <h3 class="news-title">Киномарафон фантастики</h3>
+                    <div class="news-date"><i class="fas fa-calendar-alt"></i> 20 ноября 2025</div>
+                    <p>Приглашаем на специальный показ лучших фантастических фильмов всех времен. Три дня незабываемых впечатлений для настоящих ценителей жанра!</p>
+                    <a href="news.html#marathon" class="news-link">Подробнее <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+    <!-- Подвал -->
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-column">
+                <h3 class="footer-title">Кинотеатр "КиноМир"</h3>
+                <p>Ваш проводник в мир кино. Мы предлагаем лучшие фильмы, современное оборудование и незабываемые впечатления для всей семьи.</p>
+            </div>
+            <div class="footer-column" id="contacts">
+                <h3 class="footer-title">Контакты</h3>
+                <div class="footer-contact">
+                    <i class="fas fa-phone"></i> +7 (495) 123-45-67
+                </div>
+                <div class="footer-contact">
+                    <i class="fas fa-envelope"></i> info@kinomir.ru
+                </div>
+                <div class="footer-contact">
+                    <i class="fas fa-map-marker-alt"></i> г. Барнаул, ул. Строителей, 117<br>
+                    <span style="margin-left: 20px;">ТРЦ "Галактика", 3 этаж</span>
+                </div>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>© 2025 Кинотеатр "КиноМир". Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- Модальное окно с крестиком слева -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close">&times;</button>
+                <h2 class="modal-title" id="modalTitle">Вход в личный кабинет</h2>
+            </div>
+            <div class="modal-body">
+
+                <!-- Переключение между Входом и Регистрацией -->
+                <div class="auth-tabs">
+                    <button class="tab-link active" data-tab="login">Вход</button>
+                    <button class="tab-link" data-tab="register">Регистрация</button>
+                </div>
+
+                <!-- Форма входа -->
+                <form id="loginForm" class="auth-form active">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" required>
+                    </div>
+                    <div class="form-group password-container">
+                        <label class="form-label">Пароль</label>
+                        <div class="input-with-icon">
+                            <input type="password" class="form-control" id="loginPassword" required>
+                            <button type="button" class="password-toggle">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-hint">Пароль должен содержать минимум 8 символов</div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-block">Войти</button>
+                    </div>
+                </form>
+
+                <!-- Форма регистрации -->
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">ФИО</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Телефон</label>
+                        <input type="tel" class="form-control" required>
+                    </div>
+                    <div class="form-group password-container">
+                        <label class="form-label">Пароль</label>
+                        <div class="input-with-icon">
+                            <input type="password" class="form-control" id="registerPassword" required>
+                            <button type="button" class="password-toggle">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-hint">Пароль должен содержать минимум 8 символов</div>
+                    </div>
+                    <!-- Поле "Подтвердите пароль" в регистрации -->
+                    <div class="form-group password-container">
+                        <label class="form-label">Подтвердите пароль</label>
+                        <div class="input-with-icon">
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                            <button type="button" class="password-toggle">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <!-- Элемент для сообщения об ошибке -->
+                        <div class="password-error" id="passwordError">Пароли не совпадают</div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно бронирования -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content booking-modal">
+            <div class="modal-header">
+                <button class="close">&times;</button>
+                <h2 class="modal-title">Бронирование билетов</h2>
+            </div>
+            <div class="modal-body">
+                <div class="booking-info">
+                    <h3 id="bookingMovieTitle">Аватар 3: Путь воды</h3>
+                    <div class="booking-details">
+                        <span id="bookingDate">Сегодня, 15 ноября</span>
+                        <span id="bookingTime">10:00</span>
+                        <span id="bookingHall">Зал 1</span>
+                    </div>
+                </div>
+                
+                <div class="seats-selection">
+                    <h4>Выбор мест</h4>
+                    <div class="cinema-hall">
+                        <div class="screen">ЭКРАН</div>
+                        <div class="seats-grid" id="seatsGrid">
+                            <!-- Места будут генерироваться JavaScript -->
+                        </div>
+                        <div class="seats-legend">
+                            <div class="legend-item">
+                                <div class="seat available"></div>
+                                <span>Свободно</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="seat selected"></div>
+                                <span>Выбрано</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="seat occupied"></div>
+                                <span>Занято</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="booking-summary">
+    <div class="summary-details">
+        <h4>Ваш заказ:</h4>
+        <div class="selected-seats" id="selectedSeatsList">
+    <!-- Этот блок должен быть полностью пустым, без каких-либо вложенных элементов -->
+</div>
+        <div class="total-price">
+            Итого: <span id="totalAmount">0</span> руб.
+        </div>
+    </div>
+    <button class="btn btn-primary btn-block" id="confirmBooking">
+        <i class="fas fa-check"></i> Подтвердить бронирование
+    </button>
+</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно трейлера -->
+    <div id="trailerModal" class="modal">
+        <div class="modal-content trailer-modal">
+            <div class="modal-header">
+                <button class="close">&times;</button>
+                <h2 class="modal-title" id="trailerTitle">Трейлер фильма</h2>
+            </div>
+            <div class="modal-body">
+                <div class="trailer-container" id="trailerContainer">
+                    <!-- Трейлер будет загружен динамически -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // Данные фильмов с локальными видеофайлами
+    const moviesData = [
+        {
+            title: "Мажор в Дубае",
+            genre: "Комедия, Приключения",
+            duration: "1ч 52м",
+            age: "16+",
+            description: "Ваня Соловьев, лучший друг Мажора, мечтает о роскошной свадьбе с Верой, но не хочет просить денег. Он едет в Дубай, чтобы заработать на криптовалюте, но попадает в международную криминальную авантюру и прячется в бедном районе. Его находит Соколовский, но на их пути встают местные криминальные авторитеты.",
+            imageUrl: "images/Мажор в Дубае.jpg",
+            badge: "NEW",
+            price: 450,
+            trailerType: "video",
+            trailerUrl: "videos/major-dubai.mp4",
+            schedule: [
+                { time: "10:00", hall: "1" },
+                { time: "13:30", hall: "2" },
+                { time: "16:45", hall: "1" },
+                { time: "19:15", hall: "3" },
+                { time: "22:00", hall: "2" }
+            ]
+        },
+        {
+            title: "Алиса в стране чудес",
+            genre: "Фэнтези, Приключения",
+            duration: "1ч 48м",
+            age: "6+",
+            description: "15-летняя Алиса попадает в Страну чудес без времени и солнца в зените. Там она встречает родных, знакомых и друзей, но они не узнают её, считая чужой. Чтобы вернуться домой, ей нужно преодолеть множество препятствий.",
+            imageUrl: "images/Алиса в стране чудес.webp",
+            badge: "ХИТ",
+            price: 350,
+            trailerType: "video",
+            trailerUrl: "videos/alice-wonderland.mp4",
+            schedule: [
+                { time: "11:15", hall: "3" },
+                { time: "14:30", hall: "1" },
+                { time: "17:45", hall: "2" },
+                { time: "20:30", hall: "1" },
+                { time: "23:00", hall: "3" }
+            ]
+        },
+        {
+            title: "Чебурашка 2",
+            genre: "Фантастика, Приключения",
+            duration: "1ч 30м",
+            age: "6+",
+            description: "Чебурашка живет у Гены год. У них часто возникают разногласия из-за самостоятельности Чебурашки. На дне рождения Сони он случайно портит праздник, и они сбегают в горы. Взрослые ищут их и учатся прислушиваться друг к другу, чтобы вернуть детей домой.",
+            imageUrl: "images/Чебурашка.jpeg",
+            badge: "СКОРО В ПРОКАТЕ",
+            price: 650,
+            trailerType: "video",
+            trailerUrl: "videos/cheburashka2.mp4",
+            schedule: [], // Пустое расписание - билеты недоступны
+            comingSoon: true,
+            releaseDate: "1 января 2026"
+        },
+        {
+            title: "Астрал: 13 инкарнаций зла",
+            genre: "Ужасы, Триллер",
+            duration: "1ч 54м",
+            age: "18+",
+            description: "Католическая монахиня сестра Юния пытается провести экзорцизм над школьником, считая, что в него вселился один из 12 сильнейших демонов. Пока мальчик находится в церковной больнице, где капеллан считает, что ему нужна психологическая помощь, сестра Юния берет в помощницы сестру Микаэлу — девушка, способная видеть духов, но отрицающая свой дар.",
+            imageUrl: "images/Астрал 13 инкарнаций.webp",
+            badge: "NEW",
+            price: 450,
+            trailerType: "video",
+            trailerUrl: "videos/astral-13.mp4",
+            schedule: [
+                { time: "21:00", hall: "4" },
+                { time: "23:30", hall: "4" }
+            ]
+        },
+        {
+            title: "Сентиментальная ценность",
+            genre: "Драмма, Комедия",
+            duration: "2ч 12м",
+            age: "18+",
+            description: "Густав Борг, знаменитый режиссёр, возвращается к дочерям Норе и Агнес с новым сценарием. Он предлагает Норе главную роль, но она отказывается, и её место занимает голливудская звезда. Семейный дом может стать идеальной съёмочной площадкой и шансом для примирения.",
+            imageUrl: "images/Сентиментальная ценность.webp",
+            badge: "NEW",
+            price: 550,
+            trailerType: "video",
+            trailerUrl: "videos/sentimental-value.mp4",
+            schedule: [
+                { time: "10:30", hall: "4" },
+                { time: "13:00", hall: "4" },
+                { time: "15:30", hall: "4" },
+                { time: "18:00", hall: "4" }
+            ]
+        },
+        {
+            title: "Эльф и украденное рождество",
+            genre: "Драма, Комедия",
+            duration: "1ч 31м",
+            age: "6+",
+            description: "Эльф Йойо мечтал работать на заводе Санты, но тот стал автоматизированным, а Санта исчез. Когда злодейка Кибер Скрудж угрожает сорвать праздник, Йойо собирает команду и отправляется на поиски Санты.",
+            imageUrl: "images/Эльф и украденное рождество.webp",
+            badge: "NEW",
+            price: 250,
+            trailerType: "video",
+            trailerUrl: "videos/elf-christmas.mp4",
+            schedule: [
+                { time: "19:00", hall: "2" },
+                { time: "21:45", hall: "2" }
+            ]
+        }
+    ];
+
+    // Улучшенная функция для работы с датами
+    function getDates() {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const dayAfter = new Date(today);
+        dayAfter.setDate(dayAfter.getDate() + 2);
+        
+        // Форматируем даты для отображения
+        const formatDisplayDate = (date) => {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            const weekdays = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+            const weekday = weekdays[date.getDay()];
+            return {
+                full: `${weekday}, ${day}.${month}.${year}`,
+                short: `${day}.${month}.${year}`,
+                weekday: weekday
+            };
+        };
+        
+        return {
+            today: formatDisplayDate(today),
+            tomorrow: formatDisplayDate(tomorrow),
+            dayAfter: formatDisplayDate(dayAfter),
+            raw: {
+                today: today,
+                tomorrow: tomorrow,
+                dayAfter: dayAfter
+            }
+        };
+    }
+
+    // Функция для обновления дат в реальном времени
+    function updateDatesInRealTime() {
+        const dates = getDates();
+        const activeDateBtn = document.querySelector('.date-btn.active');
+        
+        if (activeDateBtn) {
+            const dateType = activeDateBtn.getAttribute('data-date');
+            updateSchedule(dateType);
+            animateDateUpdate(); // Добавляем анимацию
+        }
+    }
+
+    // Функция для анимации обновления даты
+    function animateDateUpdate() {
+        const dateElements = document.querySelectorAll('.current-date, #bookingDate');
+        dateElements.forEach(element => {
+            element.classList.add('date-updating');
+            setTimeout(() => {
+                element.classList.remove('date-updating');
+            }, 1000);
+        });
+    }
+
+    // Функция для получения текущей даты в правильном формате
+    function getCurrentFormattedDate() {
+        const now = new Date();
+        const day = now.getDate().toString().padStart(2, '0');
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const year = now.getFullYear();
+        return `${day}.${month}.${year}`;
+    }
+
+    // ФУНКЦИИ ДЛЯ РАБОТЫ С РАСПИСАНИЕМ ПО ДАТАМ
+    function generateScheduleForDate(baseSchedule, dateOffset) {
+        // Создаем расписание для конкретной даты на основе базового
+        return baseSchedule.map(session => {
+            // Создаем копию сеанса
+            const newSession = {...session};
+            
+            // Для демонстрации немного меняем время в зависимости от даты
+            // В реальном приложении здесь будет логика получения реального расписания
+            if (dateOffset === 1) { // Завтра
+                newSession.time = shiftTime(session.time, 30); // Сдвигаем на 30 минут
+            } else if (dateOffset === 2) { // Послезавтра
+                newSession.time = shiftTime(session.time, 60); // Сдвигаем на 60 минут
+            }
+            
+            return newSession;
+        });
+    }
+
+    function shiftTime(timeString, minutesToAdd) {
+        const [hours, minutes] = timeString.split(':').map(Number);
+        let totalMinutes = hours * 60 + minutes + minutesToAdd;
+        
+        // Обрабатываем переход через полночь
+        totalMinutes = totalMinutes % (24 * 60);
+        if (totalMinutes < 0) totalMinutes += 24 * 60;
+        
+        const newHours = Math.floor(totalMinutes / 60);
+        const newMinutes = totalMinutes % 60;
+        
+        return `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}`;
+    }
+
+    // ОБНОВЛЕННАЯ функция загрузки фильмов с учетом выбранной даты
+    function loadMovies(dateType = 'today') {
+        const moviesContainer = document.getElementById('moviesContainer');
+        moviesContainer.innerHTML = '';
+        
+        // Определяем смещение даты
+        let dateOffset = 0;
+        let dateText = '';
+        const dates = getDates();
+        
+        switch(dateType) {
+            case 'today':
+                dateOffset = 0;
+                dateText = dates.today.full;
+                break;
+            case 'tomorrow':
+                dateOffset = 1;
+                dateText = dates.tomorrow.full;
+                break;
+            case 'day-after':
+                dateOffset = 2;
+                dateText = dates.dayAfter.full;
+                break;
+        }
+        
+        moviesData.forEach(movie => {
+            const movieCard = document.createElement('div');
+            movieCard.className = 'movie-card';
+            
+            // Для фильмов, которые скоро выйдут
+            const isComingSoon = movie.comingSoon || movie.schedule.length === 0;
+            
+            let scheduleHtml = '';
+            let actionButtons = '';
+            
+            if (isComingSoon) {
+                scheduleHtml = `
+                    <div class="schedule-container">
+                        <h4>Премьера состоится ${movie.releaseDate || 'скоро'}</h4>
+                        <p style="color: var(--text-secondary); margin-top: 10px;">Билеты появятся в продаже ближе к дате премьеры</p>
+                    </div>
+                `;
+                
+                actionButtons = `
+    <div class="movie-actions">
+        <button class="btn btn-primary btn-sm soon-btn" data-movie="${movie.title}">
+            <i class="fas fa-clock"></i> Скоро в продаже
+        </button>
+        <button class="btn btn-outline btn-sm watch-trailer" 
+                data-trailer="${movie.trailerUrl}" 
+                data-trailer-type="${movie.trailerType}" 
+                data-movie="${movie.title}">
+            <i class="fas fa-play"></i> Трейлер
+        </button>
+    </div>
+`;
+            } else {
+                // Генерируем расписание для выбранной даты
+                const dateSchedule = generateScheduleForDate(movie.schedule, dateOffset);
+                
+                // Создаем HTML для расписания
+                let scheduleTimesHtml = '';
+                dateSchedule.forEach(session => {
+                    scheduleTimesHtml += `<button class="time-slot" data-time="${session.time}" data-hall="${session.hall}">${session.time}</button>`;
+                });
+                
+                scheduleHtml = `
+                    <div class="schedule-container">
+                        <h4>Расписание сеансов <span class="current-date">${dateText}</span>:</h4>
+                        <div class="schedule-times">
+                            ${scheduleTimesHtml}
+                        </div>
+                        <div class="schedule-note">
+                            <small><i class="fas fa-info-circle"></i> Дата обновляется в реальном времени</small>
+                        </div>
+                    </div>
+                `;
+                
+                actionButtons = `
+                    <div class="movie-actions">
+                        <button class="btn btn-primary btn-sm book-ticket" 
+                                data-movie="${movie.title}" 
+                                data-price="${movie.price}">
+                            <i class="fas fa-ticket-alt"></i> Забронировать (${movie.price} руб.)
+                        </button>
+                        <button class="btn btn-outline btn-sm watch-trailer" 
+                                data-trailer="${movie.trailerUrl}" 
+                                data-trailer-type="${movie.trailerType}" 
+                                data-movie="${movie.title}">
+                            <i class="fas fa-play"></i> Трейлер
+                        </button>
+                    </div>
+                `;
+            }
+            
+            // Создаем HTML для постера
+            const posterHtml = movie.imageUrl 
+                ? `<img src="${movie.imageUrl}" alt="${movie.title}">`
+                : `<div class="poster-placeholder"><i class="fas fa-film"></i></div>`;
+            
+            // Создаем бейдж, если он есть
+            const badgeHtml = movie.badge 
+                ? `<div class="movie-badge">${movie.badge}</div>` 
+                : '';
+            
+            movieCard.innerHTML = `
+                <div class="movie-poster">
+                    ${posterHtml}
+                    ${badgeHtml}
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">${movie.title}</h3>
+                    <div class="movie-meta">
+                        <span class="movie-genre">${movie.genre}</span>
+                        <span class="movie-duration">${movie.duration}</span>
+                        <span class="movie-age">${movie.age}</span>
+                    </div>
+                    <p class="movie-description">${movie.description}</p>
+                    ${scheduleHtml}
+                    ${actionButtons}
+                </div>
+            `;
+            
+            moviesContainer.appendChild(movieCard);
+        });
+        
+        // Добавляем обработчики событий для кнопок бронирования и трейлеров
+        initializeMovieButtons();
+        
+        // Обновляем дату в модальном окне
+        updateSchedule(dateType);
+    }
+
+    // ОБНОВЛЕННАЯ функция обновления расписания с реальным временем
+    function updateSchedule(selectedDate) {
+        const dates = getDates();
+        let dateText = '';
+        let dateValue = '';
+        
+        switch(selectedDate) {
+            case 'today':
+                dateText = dates.today.full;
+                dateValue = dates.today.short;
+                break;
+            case 'tomorrow':
+                dateText = dates.tomorrow.full;
+                dateValue = dates.tomorrow.short;
+                break;
+            case 'day-after':
+                dateText = dates.dayAfter.full;
+                dateValue = dates.dayAfter.short;
+                break;
+        }
+        
+        // Обновляем текст в модальном окне бронирования
+        const bookingDateElements = document.querySelectorAll('#bookingDate');
+        bookingDateElements.forEach(element => {
+            element.textContent = dateText;
+            // Сохраняем значение даты в data-атрибут для использования в бронировании
+            element.setAttribute('data-date-value', dateValue);
+        });
+        
+        // Обновляем дату в уведомлениях и других местах
+        updateCurrentDateInUI(dateValue, dateText);
+    }
+
+    // Функция для обновления даты в интерфейсе
+    function updateCurrentDateInUI(dateValue, dateText) {
+        // Обновляем все элементы с классом .current-date
+        const dateElements = document.querySelectorAll('.current-date');
+        dateElements.forEach(element => {
+            element.textContent = dateText;
+            element.setAttribute('data-date-value', dateValue);
+        });
+        
+        // Обновляем скрытое поле с текущей датой (если нужно для форм)
+        const hiddenDateField = document.getElementById('currentBookingDate');
+        if (hiddenDateField) {
+            hiddenDateField.value = dateValue;
+        }
+    }
+
+    // ОБНОВЛЕННАЯ функция инициализации переключения дат
+    function initializeDateSwitcher() {
+        const dateButtons = document.querySelectorAll('.date-btn');
+        
+        dateButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const dateType = this.getAttribute('data-date');
+                
+                // Снимаем активный класс со всех кнопок
+                dateButtons.forEach(b => b.classList.remove('active'));
+                // Добавляем активный класс текущей кнопке
+                this.classList.add('active');
+                
+                // Перезагружаем фильмы с новым расписанием
+                loadMovies(dateType);
+            });
+        });
+    }
+
+    // ОБНОВЛЕННАЯ функция инициализации кнопок бронирования
+    function initializeMovieButtons() {
+        // Выбор времени сеанса
+        const timeSlots = document.querySelectorAll('.time-slot');
+        timeSlots.forEach(slot => {
+            slot.addEventListener('click', function() {
+                // Снимаем выделение со всех слотов в этом фильме
+                const parentCard = this.closest('.movie-card');
+                parentCard.querySelectorAll('.time-slot').forEach(s => s.classList.remove('active'));
+                // Выделяем текущий слот
+                this.classList.add('active');
+            });
+        });
+
+        // Обработчик для кнопки "Скоро в продаже"
+        const soonButtons = document.querySelectorAll('.soon-btn');
+        soonButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const movieTitle = this.getAttribute('data-movie');
+                alert(`Билеты на фильм "${movieTitle}" появятся в продаже ближе к дате премьеры. Следите за обновлениями!`);
+            });
+        });
+        
+        // Открытие модального окна бронирования - ИСПРАВЛЕННАЯ ВЕРСИЯ
+        const bookButtons = document.querySelectorAll('.book-ticket');
+        const bookingModal = document.getElementById('bookingModal');
+        const bookingMovieTitle = document.getElementById('bookingMovieTitle');
+        const bookingDate = document.getElementById('bookingDate');
+        const bookingTime = document.getElementById('bookingTime');
+        const bookingHall = document.getElementById('bookingHall');
+        
+        bookButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const movieTitle = this.getAttribute('data-movie');
+                const moviePrice = parseInt(this.getAttribute('data-price')) || 0; // Гарантируем число
+                
+                console.log('Booking data:', { movieTitle, moviePrice }); // Для отладки
+                
+                const activeDateBtn = document.querySelector('.date-btn.active');
+                const dateType = activeDateBtn.getAttribute('data-date');
+                const dates = getDates();
+                
+                // Получаем актуальную дату на момент бронирования
+                let currentDateText = '';
+                switch(dateType) {
+                    case 'today':
+                        currentDateText = dates.today.full;
+                        break;
+                    case 'tomorrow':
+                        currentDateText = dates.tomorrow.full;
+                        break;
+                    case 'day-after':
+                        currentDateText = dates.dayAfter.full;
+                        break;
+                }
+                
+                bookingMovieTitle.textContent = movieTitle;
+                // Используем актуальную дату
+                bookingDate.textContent = currentDateText;
+                
+                const activeTime = this.closest('.movie-card').querySelector('.time-slot.active');
+                
+                if (activeTime) {
+                    bookingTime.textContent = activeTime.textContent;
+                    bookingHall.textContent = 'Зал ' + activeTime.getAttribute('data-hall');
+                } else {
+                    // Если время не выбрано, берем первое доступное
+                    const firstTimeSlot = this.closest('.movie-card').querySelector('.time-slot');
+                    if (firstTimeSlot) {
+                        bookingTime.textContent = firstTimeSlot.textContent;
+                        bookingHall.textContent = 'Зал ' + firstTimeSlot.getAttribute('data-hall');
+                        firstTimeSlot.classList.add('active');
+                    } else {
+                        bookingTime.textContent = '--:--';
+                        bookingHall.textContent = '--';
+                    }
+                }
+                
+                // Генерация схемы зала с гарантированной ценой
+                generateSeatsLayout(moviePrice);
+                
+                // Сбрасываем предыдущий выбор
+                updateBookingSummary();
+                
+                // Показ модального окна
+                bookingModal.style.display = 'block';
+                setTimeout(() => {
+                    bookingModal.classList.add('show');
+                }, 10);
+            });
+        });
+        
+        // Открытие модального окна трейлера
+        const trailerButtons = document.querySelectorAll('.watch-trailer');
+        const trailerModal = document.getElementById('trailerModal');
+        const trailerTitle = document.getElementById('trailerTitle');
+        const trailerContainer = document.getElementById('trailerContainer');
+        
+        trailerButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const movieTitle = this.getAttribute('data-movie');
+                const trailerUrl = this.getAttribute('data-trailer');
+                const trailerType = this.getAttribute('data-trailer-type');
+                
+                trailerTitle.textContent = 'Трейлер: ' + movieTitle;
+                
+                // Загружаем трейлер в зависимости от типа
+                if (trailerType === 'video') {
+                    // Для локальных видеофайлов
+                    trailerContainer.innerHTML = `
+                        <video class="video-player" controls autoplay>
+                            <source src="${trailerUrl}" type="video/mp4">
+                            Ваш браузер не поддерживает видео тег.
+                        </video>
+                    `;
+                } else {
+                    // Если трейлер недоступен
+                    trailerContainer.innerHTML = `
+                        <div class="trailer-placeholder">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Трейлер временно недоступен</p>
+                        </div>
+                    `;
+                }
+                
+                // Показ модального окна
+                trailerModal.style.display = 'block';
+                setTimeout(() => {
+                    trailerModal.classList.add('show');
+                }, 10);
+            });
+        });
+        
+        // Закрытие модальных окон
+        const closeButtons = document.querySelectorAll('.modal .close');
+        closeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const modal = this.closest('.modal');
+                
+                // Если закрывается модальное окно трейлера, останавливаем видео
+                if (modal.id === 'trailerModal') {
+                    const video = modal.querySelector('video');
+                    if (video) {
+                        video.pause();
+                        video.currentTime = 0;
+                    }
+                }
+                
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            });
+        });
+        
+        // Закрытие модальных окон при клике вне их
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    // Если закрывается модальное окно трейлера, останавливаем видео
+                    if (modal.id === 'trailerModal') {
+                        const video = modal.querySelector('video');
+                        if (video) {
+                            video.pause();
+                            video.currentTime = 0;
+                        }
+                    }
+                    
+                    modal.classList.remove('show');
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    }
+
+    // ИСПРАВЛЕННАЯ функция генерации схемы мест
+function generateSeatsLayout(price) {
+    const seatsGrid = document.getElementById('seatsGrid');
+    seatsGrid.innerHTML = '';
+    
+    // Гарантируем, что цена - это число
+    const seatPrice = parseInt(price) || 450;
+    
+    const rows = ['A', 'B', 'C', 'D', 'E', 'F'];
+    const seatsPerRow = 10;
+    
+    rows.forEach(row => {
+        for (let i = 1; i <= seatsPerRow; i++) {
+            const seat = document.createElement('div');
+            const seatNumber = row + i;
+            
+            // УБЕДИТЕСЬ, что data-seat устанавливается правильно
+            seat.className = 'seat available';
+            seat.textContent = seatNumber;
+            seat.setAttribute('data-seat', seatNumber); // Важно: устанавливаем атрибут
+            seat.setAttribute('data-price', seatPrice);
+            
+            // Случайно занятые места для демонстрации (меньше занятых мест)
+            if (Math.random() > 0.8) {
+                seat.classList.remove('available');
+                seat.classList.add('occupied');
+            }
+            
+            // ЗАМЕНИТЕ ЭТОТ ОБРАБОТЧИК КЛИКА:
+            seat.addEventListener('click', function() {
+                if (this.classList.contains('available')) {
+                    this.classList.toggle('selected');
+                    
+                    // ДЕБАГ: проверяем data-seat при клике
+                    const seatNumber = this.getAttribute('data-seat');
+                    console.log('Клик по месту:', seatNumber, 'selected:', this.classList.contains('selected'));
+                    
+                    updateBookingSummary();
+                }
+            });
+            
+            seatsGrid.appendChild(seat);
+        }
+    });
+}
+
+// ИСПРАВЛЕННАЯ функция обновления сводки бронирования
+function updateBookingSummary() {
+    const selectedSeats = document.querySelectorAll('.seat.selected');
+    const selectedSeatsList = document.getElementById('selectedSeatsList');
+    const totalAmount = document.getElementById('totalAmount');
+    
+    // Полностью очищаем список выбранных мест
+    selectedSeatsList.innerHTML = '';
+    
+    if (selectedSeats.length > 0) {
+        let total = 0;
+        let validSeatsCount = 0;
+        
+        // Создаем заголовок для списка мест
+        const header = document.createElement('div');
+        header.style.fontWeight = '600';
+        header.style.marginBottom = '10px';
+        header.style.color = 'var(--text-primary)';
+        header.textContent = 'Выбранные места:';
+        selectedSeatsList.appendChild(header);
+        
+        // Добавляем только ВАЛИДНЫЕ выбранные места
+        selectedSeats.forEach(seat => {
+            const seatNumber = seat.getAttribute('data-seat');
+            const seatPrice = parseInt(seat.getAttribute('data-price')) || 450;
+            
+            // Пропускаем места с невалидным data-seat
+            if (!seatNumber || seatNumber === 'null') {
+                console.warn('Обнаружено место с невалидным data-seat:', seat);
+                return;
+            }
+            
+            const seatElement = document.createElement('div');
+            seatElement.textContent = `• ${seatNumber} - ${seatPrice} руб.`;
+            seatElement.style.marginBottom = '5px';
+            selectedSeatsList.appendChild(seatElement);
+            total += seatPrice;
+            validSeatsCount++;
+        });
+        
+        // Обновляем общую сумму
+        totalAmount.textContent = total;
+        
+        // Если все места были невалидными, показываем сообщение
+        if (validSeatsCount === 0) {
+            selectedSeatsList.innerHTML = '<div class="no-seats" style="color: var(--text-secondary); font-style: italic;">Выберите действительные места</div>';
+            totalAmount.textContent = '0';
+        }
+    } else {
+        selectedSeatsList.innerHTML = '<div class="no-seats" style="color: var(--text-secondary); font-style: italic;">Места не выбраны</div>';
+        totalAmount.textContent = '0';
+    }
+}
+    // Функции для бронирования билетов
+    function saveBookingToLocalStorage(bookingData) {
+        let bookings = JSON.parse(localStorage.getItem('userBookings')) || [];
+        bookingData.id = Date.now(); // Уникальный ID
+        bookings.push(bookingData);
+        localStorage.setItem('userBookings', JSON.stringify(bookings));
+    }
+
+    function showBookingSuccessNotification(bookingData) {
+        // Создаем красивое уведомление
+        const notification = document.createElement('div');
+        notification.className = 'booking-success-notification';
+        notification.innerHTML = `
+            <div class="notification-content">
+                <div class="notification-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="notification-text">
+                    <h3>Бронирование успешно завершено!</h3>
+                    <p>Билет на фильм "${bookingData.movie}" забронирован.</p>
+                    <p>Электронный билет отправлен на вашу почту.</p>
+                    <p>Сумма: ${bookingData.total} руб.</p>
+                </div>
+                <button class="notification-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Анимация появления
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        // Закрытие по клику
+        const closeBtn = notification.querySelector('.notification-close');
+        closeBtn.addEventListener('click', () => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        });
+        
+        // Автоматическое закрытие через 5 секунд
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }
+        }, 5000);
+    }
+
+    // Функция для сохранения данных бронирования в localStorage
+function saveBookingToLocalStorage(bookingData) {
+    let bookings = JSON.parse(localStorage.getItem('userBookings')) || [];
+    
+    // Добавляем уникальный ID и временную метку
+    bookingData.id = Date.now();
+    bookingData.timestamp = new Date().toISOString();
+    bookingData.status = 'Активен';
+    bookingData.bookingDate = new Date().toLocaleDateString('ru-RU');
+    
+    bookings.push(bookingData);
+    localStorage.setItem('userBookings', JSON.stringify(bookings));
+    
+    // Обновляем счетчик бонусов (10% от суммы)
+    updateBonusBalance(bookingData.total);
+    
+    // Синхронизируем с другими вкладками
+    syncBookingsAcrossTabs();
+}
+
+// Функция обновления баланса бонусов
+function updateBonusBalance(totalAmount) {
+    const bonusAmount = Math.round(parseInt(totalAmount) * 0.1); // 10% от суммы
+    let currentBalance = parseInt(localStorage.getItem('userBonusBalance')) || 0;
+    currentBalance += bonusAmount;
+    localStorage.setItem('userBonusBalance', currentBalance);
+    
+    // Сохраняем историю начислений бонусов
+    let bonusHistory = JSON.parse(localStorage.getItem('userBonusHistory')) || [];
+    bonusHistory.push({
+        date: new Date().toLocaleDateString('ru-RU'),
+        amount: bonusAmount,
+        description: `Начисление за покупку билетов`,
+        type: 'начисление'
+    });
+    localStorage.setItem('userBonusHistory', JSON.stringify(bonusHistory));
+}
+
+// Синхронизация между вкладками
+function syncBookingsAcrossTabs() {
+    const event = new StorageEvent('storage', {
+        key: 'userBookings',
+        newValue: localStorage.getItem('userBookings')
+    });
+    window.dispatchEvent(event);
+}
+
+// Обновленная функция подтверждения бронирования
+function initializeBookingConfirmation() {
+    const confirmBookingBtn = document.getElementById('confirmBooking');
+    if (confirmBookingBtn) {
+        confirmBookingBtn.addEventListener('click', function() {
+            const selectedSeats = document.querySelectorAll('.seat.selected');
+            
+            if (selectedSeats.length === 0) {
+                alert('Пожалуйста, выберите хотя бы одно место');
+                return;
+            }
+            
+            // Собираем данные о бронировании
+            const bookingData = {
+                movie: document.getElementById('bookingMovieTitle').textContent,
+                date: document.getElementById('bookingDate').textContent,
+                time: document.getElementById('bookingTime').textContent,
+                hall: document.getElementById('bookingHall').textContent,
+                seats: Array.from(selectedSeats).map(seat => {
+                    const seatNumber = seat.getAttribute('data-seat') || 'Неизвестное место';
+                    const seatPrice = parseInt(seat.getAttribute('data-price')) || 450;
+                    return {
+                        number: seatNumber,
+                        price: seatPrice
+                    };
+                }),
+                total: parseInt(document.getElementById('totalAmount').textContent),
+                status: 'Активен',
+                bookingDate: new Date().toLocaleDateString('ru-RU'),
+                bookingId: 'B' + Date.now()
+            };
+            
+            // Сохраняем в localStorage
+            saveBookingToLocalStorage(bookingData);
+            
+            // Показываем уведомление об успехе
+            showBookingSuccessNotification(bookingData);
+            
+            // Закрытие модального окна с очисткой
+            const bookingModal = document.getElementById('bookingModal');
+            bookingModal.classList.remove('show');
+            setTimeout(() => {
+                bookingModal.style.display = 'none';
+                
+                // Очищаем выбранные места
+                const selectedSeats = document.querySelectorAll('.seat.selected');
+                selectedSeats.forEach(seat => {
+                    seat.classList.remove('selected');
+                });
+                updateBookingSummary();
+            }, 300);
+        });
+    }
+}
+
+    // ОБНОВЛЕННЫЙ обработчик подтверждения бронирования
+    function initializeBookingConfirmation() {
+        const confirmBookingBtn = document.getElementById('confirmBooking');
+        if (confirmBookingBtn) {
+            confirmBookingBtn.addEventListener('click', function() {
+                const selectedSeats = document.querySelectorAll('.seat.selected');
+                
+                if (selectedSeats.length === 0) {
+                    alert('Пожалуйста, выберите хотя бы одно место');
+                    return;
+                }
+                
+                // Собираем данные о бронировании с проверкой цен
+                const bookingData = {
+                    movie: document.getElementById('bookingMovieTitle').textContent,
+                    date: document.getElementById('bookingDate').textContent,
+                    time: document.getElementById('bookingTime').textContent,
+                    hall: document.getElementById('bookingHall').textContent,
+                    seats: Array.from(selectedSeats).map(seat => {
+                        const seatNumber = seat.getAttribute('data-seat') || 'Неизвестное место';
+                        const seatPrice = parseInt(seat.getAttribute('data-price')) || 450;
+                        return `${seatNumber} (${seatPrice} руб.)`;
+                    }).join(', '),
+                    total: document.getElementById('totalAmount').textContent + ' руб.',
+                    status: 'Активен'
+                };
+                
+                // Сохраняем в localStorage для доступа в личном кабинете
+                saveBookingToLocalStorage(bookingData);
+                
+                // Показываем уведомление об успехе
+                showBookingSuccessNotification(bookingData);
+                
+                // Закрытие модального окна с очисткой
+                const bookingModal = document.getElementById('bookingModal');
+                bookingModal.classList.remove('show');
+                setTimeout(() => {
+                    bookingModal.style.display = 'none';
+                    
+                    // Очищаем выбранные места
+                    const selectedSeats = document.querySelectorAll('.seat.selected');
+                    selectedSeats.forEach(seat => {
+                        seat.classList.remove('selected');
+                    });
+                    updateBookingSummary();
+                }, 300);
+            });
+        }
+    }
+
+    // Инициализация всех функций при загрузке - ОБНОВЛЕННАЯ
+    document.addEventListener('DOMContentLoaded', function() {
+        // Создание плавающих элементов
+        const floatingContainer = document.getElementById('floatingElements');
+        for (let i = 0; i < 8; i++) {
+            const element = document.createElement('div');
+            element.className = 'floating-element';
+            element.style.width = `${Math.random() * 100 + 50}px`;
+            element.style.height = element.style.width;
+            element.style.top = `${Math.random() * 100}%`;
+            element.style.left = `${Math.random() * 100}%`;
+            element.style.animationDelay = `${Math.random() * 10}s`;
+            element.style.animationDuration = `${Math.random() * 20 + 10}s`;
+            floatingContainer.appendChild(element);
+        }
+
+        // Загрузка фильмов на страницу (по умолчанию "Сегодня")
+        loadMovies('today');
+
+        // Инициализируем переключение дат
+        initializeDateSwitcher();
+
+        // Запускаем периодическое обновление дат
+        setInterval(updateDatesInRealTime, 60000); // Обновлять каждую минуту
+
+        // Эффект при скролле для шапки
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(15, 28, 46, 0.98)';
+                header.style.boxShadow = 'var(--shadow-lg)';
+            } else {
+                header.style.background = 'rgba(15, 28, 46, 0.95)';
+                header.style.boxShadow = 'var(--shadow-md)';
+            }
+        });
+
+        // Мобильное меню
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navMenu = document.querySelector('.nav-menu');
+        const headerActions = document.querySelector('.header-actions');
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                headerActions.classList.toggle('active');
+            });
+        }
+
+        // Модальное окно
+        const modal = document.getElementById('authModal');
+        const openModalBtns = document.querySelectorAll('.open-modal-btn');
+        const closeBtn = document.querySelector('.close');
+        const tabLinks = document.querySelectorAll('.tab-link');
+        const authForms = document.querySelectorAll('.auth-form');
+
+        // Открытие модального окна
+        openModalBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                modal.style.display = 'block';
+                setTimeout(() => {
+                    modal.classList.add('show');
+                }, 10);
+            });
+        });
+
+        // Закрытие модального окна
+        closeBtn.addEventListener('click', function() {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        });
+
+        // Переключение между вкладками
+        tabLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                const tab = this.getAttribute('data-tab');
+                
+                // Обновляем активную вкладку
+                tabLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Показываем соответствующую форму
+                authForms.forEach(form => {
+                    form.classList.remove('active');
+                    if (form.id === tab + 'Form') {
+                        form.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Инициализация подтверждения бронирования
+        initializeBookingConfirmation();
+    });
+
+    // Функция для сохранения данных бронирования в localStorage
+function saveBookingToLocalStorage(bookingData) {
+    let bookings = JSON.parse(localStorage.getItem('userBookings')) || [];
+    
+    // Добавляем уникальный ID и временную метку
+    bookingData.id = Date.now();
+    bookingData.timestamp = new Date().toISOString();
+    bookingData.status = 'Активен';
+    
+    bookings.push(bookingData);
+    localStorage.setItem('userBookings', JSON.stringify(bookings));
+    
+    // Обновляем счетчик бонусов (10% от суммы)
+    updateBonusBalance(bookingData.total);
+}
+
+// Функция обновления баланса бонусов
+function updateBonusBalance(totalAmount) {
+    const bonusAmount = Math.round(parseInt(totalAmount) * 0.1); // 10% от суммы
+    let currentBalance = parseInt(localStorage.getItem('userBonusBalance')) || 0;
+    currentBalance += bonusAmount;
+    localStorage.setItem('userBonusBalance', currentBalance);
+}
+
+// Обновленная функция подтверждения бронирования
+function initializeBookingConfirmation() {
+    const confirmBookingBtn = document.getElementById('confirmBooking');
+    if (confirmBookingBtn) {
+        confirmBookingBtn.addEventListener('click', function() {
+            const selectedSeats = document.querySelectorAll('.seat.selected');
+            
+            if (selectedSeats.length === 0) {
+                alert('Пожалуйста, выберите хотя бы одно место');
+                return;
+            }
+            
+            // Собираем данные о бронировании
+            const bookingData = {
+                movie: document.getElementById('bookingMovieTitle').textContent,
+                date: document.getElementById('bookingDate').textContent,
+                time: document.getElementById('bookingTime').textContent,
+                hall: document.getElementById('bookingHall').textContent,
+                seats: Array.from(selectedSeats).map(seat => {
+                    const seatNumber = seat.getAttribute('data-seat') || 'Неизвестное место';
+                    const seatPrice = parseInt(seat.getAttribute('data-price')) || 450;
+                    return {
+                        number: seatNumber,
+                        price: seatPrice
+                    };
+                }),
+                total: parseInt(document.getElementById('totalAmount').textContent),
+                status: 'Активен'
+            };
+            
+            // Сохраняем в localStorage
+            saveBookingToLocalStorage(bookingData);
+            
+            // Показываем уведомление об успехе
+            showBookingSuccessNotification(bookingData);
+            
+            // Закрытие модального окна с очисткой
+            const bookingModal = document.getElementById('bookingModal');
+            bookingModal.classList.remove('show');
+            setTimeout(() => {
+                bookingModal.style.display = 'none';
+                
+                // Очищаем выбранные места
+                const selectedSeats = document.querySelectorAll('.seat.selected');
+                selectedSeats.forEach(seat => {
+                    seat.classList.remove('selected');
+                });
+                updateBookingSummary();
+            }, 300);
+        });
+    }
+}
+
+// Обновленная функция показа уведомления
+function showBookingSuccessNotification(bookingData) {
+    const notification = document.createElement('div');
+    notification.className = 'booking-success-notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="notification-text">
+                <h3>Бронирование успешно завершено!</h3>
+                <p>Билет на фильм "${bookingData.movie}" забронирован.</p>
+                <p>Количество билетов: ${bookingData.seats.length}</p>
+                <p>Сумма: ${bookingData.total} руб.</p>
+                <div class="tickets-count">
+                    <a href="personal.html" class="btn btn-sm btn-outline" style="color: white; border-color: white;">
+                        <i class="fas fa-ticket-alt"></i> Перейти в личный кабинет
+                    </a>
+                </div>
+            </div>
+            <button class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Анимация появления
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    // Закрытие по клику
+    const closeBtn = notification.querySelector('.notification-close');
+    closeBtn.addEventListener('click', () => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    });
+    
+    // Автоматическое закрытие через 5 секунд
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }
+    }, 5000);
+}
+
+
+
+
+
+
+
+
+// Функция для сохранения бронирования в localStorage и синхронизации
+function saveBookingToLocalStorage(bookingData) {
+    let bookings = JSON.parse(localStorage.getItem('userBookings')) || [];
+    
+    // Добавляем уникальный ID и временную метку
+    bookingData.id = Date.now();
+    bookingData.timestamp = new Date().toISOString();
+    bookingData.status = 'Активен';
+    bookingData.bookingDate = new Date().toLocaleDateString('ru-RU');
+    bookingData.bookingId = 'B' + Date.now();
+    
+    bookings.push(bookingData);
+    localStorage.setItem('userBookings', JSON.stringify(bookings));
+    
+    // Обновляем счетчик бонусов (10% от суммы)
+    updateBonusBalance(bookingData.total);
+    
+    // Синхронизируем с другими вкладками
+    syncBookingsAcrossTabs();
+    
+    return bookingData;
+}
+
+// Функция обновления баланса бонусов
+function updateBonusBalance(totalAmount) {
+    const bonusAmount = Math.round(parseInt(totalAmount) * 0.1); // 10% от суммы
+    let currentBalance = parseInt(localStorage.getItem('userBonusBalance')) || 0;
+    currentBalance += bonusAmount;
+    localStorage.setItem('userBonusBalance', currentBalance);
+    
+    // Сохраняем историю начислений бонусов
+    let bonusHistory = JSON.parse(localStorage.getItem('userBonusHistory')) || [];
+    bonusHistory.push({
+        date: new Date().toLocaleDateString('ru-RU'),
+        amount: bonusAmount,
+        description: `Начисление за покупку билетов`,
+        type: 'начисление'
+    });
+    localStorage.setItem('userBonusHistory', JSON.stringify(bonusHistory));
+}
+
+// Синхронизация между вкладками
+function syncBookingsAcrossTabs() {
+    // Создаем кастомное событие для синхронизации
+    const event = new StorageEvent('storage', {
+        key: 'userBookings',
+        newValue: localStorage.getItem('userBookings')
+    });
+    window.dispatchEvent(event);
+}
+
+// Обновленная функция подтверждения бронирования
+function initializeBookingConfirmation() {
+    const confirmBookingBtn = document.getElementById('confirmBooking');
+    if (confirmBookingBtn) {
+        confirmBookingBtn.addEventListener('click', function() {
+            const selectedSeats = document.querySelectorAll('.seat.selected');
+            
+            if (selectedSeats.length === 0) {
+                alert('Пожалуйста, выберите хотя бы одно место');
+                return;
+            }
+            
+            // Собираем данные о бронировании
+            const bookingData = {
+                movie: document.getElementById('bookingMovieTitle').textContent,
+                date: document.getElementById('bookingDate').textContent,
+                time: document.getElementById('bookingTime').textContent,
+                hall: document.getElementById('bookingHall').textContent,
+                seats: Array.from(selectedSeats).map(seat => {
+                    const seatNumber = seat.getAttribute('data-seat') || 'Неизвестное место';
+                    const seatPrice = parseInt(seat.getAttribute('data-price')) || 450;
+                    return {
+                        number: seatNumber,
+                        price: seatPrice
+                    };
+                }),
+                total: parseInt(document.getElementById('totalAmount').textContent),
+                status: 'Активен',
+                bookingDate: new Date().toLocaleDateString('ru-RU'),
+                bookingId: 'B' + Date.now()
+            };
+            
+            // Сохраняем в localStorage
+            const savedBooking = saveBookingToLocalStorage(bookingData);
+            
+            // Показываем уведомление об успехе
+            showBookingSuccessNotification(savedBooking);
+            
+            // Закрытие модального окна с очисткой
+            const bookingModal = document.getElementById('bookingModal');
+            bookingModal.classList.remove('show');
+            setTimeout(() => {
+                bookingModal.style.display = 'none';
+                
+                // Очищаем выбранные места
+                const selectedSeats = document.querySelectorAll('.seat.selected');
+                selectedSeats.forEach(seat => {
+                    seat.classList.remove('selected');
+                });
+                updateBookingSummary();
+            }, 300);
+        });
+    }
+}
+
+// Обновленная функция показа уведомления
+function showBookingSuccessNotification(bookingData) {
+    const notification = document.createElement('div');
+    notification.className = 'booking-success-notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="notification-text">
+                <h3>Бронирование успешно завершено!</h3>
+                <p>Билет на фильм "${bookingData.movie}" забронирован.</p>
+                <p>Количество билетов: ${bookingData.seats.length}</p>
+                <p>Сумма: ${bookingData.total} руб.</p>
+                <div class="tickets-count">
+                    <a href="personal.html" class="btn btn-sm btn-outline" style="color: white; border-color: white;">
+                        <i class="fas fa-ticket-alt"></i> Перейти в личный кабинет
+                    </a>
+                </div>
+            </div>
+            <button class="notification-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Анимация появления
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    // Закрытие по клику
+    const closeBtn = notification.querySelector('.notification-close');
+    closeBtn.addEventListener('click', () => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    });
+    
+    // Автоматическое закрытие через 5 секунд
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }
+    }, 5000);
+}
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

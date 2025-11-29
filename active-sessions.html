@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Активные сессии - Кинотеатр "КиноМир"</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <style>
+        /* ===== ОБНОВЛЕННЫЕ CSS ПЕРЕМЕННЫЕ ===== */
+        :root {
+            /* ОБНОВЛЕННАЯ ЦВЕТОВАЯ ПАЛИТРА ДЛЯ КИНОТЕАТРА */
+            --primary-blue: #0f1c2e;
+            --primary-blue-light: #1a2d4a;
+            --accent-orange: #e50914;
+            --accent-orange-light: #ff4d4d;
+            --accent-teal: #00b4d8;
+            --accent-purple: #6a0dad;
+            --background: #0a0f1c;
+            --background-gradient: linear-gradient(135deg, #0a0f1c 0%, #1a2d4a 100%);
+            --text-primary: #ffffff;
+            --text-secondary: #b0b8c5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --white: #FFFFFF;
+            --gray-light: #1e293b;
+            --gray-medium: #334155;
+            
+            /* ТИПОГРАФИКА */
+            --font-heading: 'Montserrat', sans-serif;
+            --font-body: 'Open Sans', sans-serif;
+            
+            /* ТЕНИ И СКРУГЛЕНИЯ */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.5);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.7);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.8);
+            --shadow-xl: 0 20px 40px rgba(0,0,0,0.9);
+            --border-radius: 10px;
+            --border-radius-lg: 16px;
+        }
+
+        /* ===== БАЗОВЫЕ СТИЛИ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            animation: pageFade 0.5s ease-in-out;
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--background);
+            padding-top: 80px;
+            background: var(--background-gradient);
+        }
+
+        /* ===== ПЛАВАЮЩИЕ ЭЛЕМЕНТЫ ДЛЯ ФОНА ===== */
+        .floating-elements {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(229, 9, 20, 0.05);
+            animation: float 15s ease-in-out infinite;
+        }
+
+        /* ===== АНИМАЦИИ ===== */
+        @keyframes pageFade {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(229, 9, 20, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(229, 9, 20, 0.8); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== КОМПОНЕНТЫ ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* КНОПКИ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            gap: 8px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-orange-light) 100%);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(229, 9, 20, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(15, 28, 46, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(15, 28, 46, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--error) 0%, #dc2626 100%);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--accent-orange);
+            color: var(--accent-orange);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--accent-orange);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.875rem;
+            height: fit-content;
+            white-space: nowrap;
+        }
+
+        .btn-lg {
+            padding: 16px 32px;
+            font-size: 1.125rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn:disabled:hover {
+            transform: none;
+        }
+
+        /* КАРТОЧКИ */
+        .card {
+            background: var(--gray-light);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-xl);
+            padding: 30px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.7s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal), var(--accent-purple));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* ===== ШАПКА САЙТА ===== */
+        header {
+            background: rgba(15, 28, 46, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            flex-wrap: nowrap;
+            min-height: 80px;
+        }
+
+        .logo-text {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo-text::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal));
+            transition: width 0.5s ease;
+        }
+
+        .logo-text:hover::after {
+            width: 100%;
+        }
+
+        .logo-accent {
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--accent-orange);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin: 0 auto;
+            padding: 0 2rem;
+            flex-shrink: 1;
+            flex-wrap: nowrap;
+            justify-content: center;
+        }
+
+        .nav-menu li {
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .nav-menu a {
+            font-weight: 500;
+            color: var(--text-primary);
+            position: relative;
+            padding: 0.5rem 0;
+            white-space: nowrap;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: var(--accent-orange);
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--accent-orange);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            transform: scaleX(1);
+        }
+
+        .nav-link.active {
+            color: var(--accent-orange);
+            position: relative;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--accent-orange);
+            transform: scaleX(1);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+            min-width: fit-content;
+        }
+
+        .phone-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            flex-shrink: 0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .phone-link:hover {
+            color: var(--accent-orange);
+        }
+
+        /* ===== СТРАНИЦА АКТИВНЫХ СЕССИЙ ===== */
+        .sessions-section {
+            padding: 60px 0 80px;
+            background-color: var(--background);
+            position: relative;
+            overflow: hidden;
+            min-height: calc(100vh - 200px);
+        }
+
+        .sessions-container {
+            max-width: 800px;
+            margin: 0 auto;
+            animation: slideInUp 0.7s ease;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 2.2rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal));
+            border-radius: 2px;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 20px;
+        }
+
+        /* СЕССИИ */
+        .session-device {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            background: var(--gray-medium);
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        .session-device:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .session-device.current {
+            border-left-color: var(--success);
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, var(--gray-medium) 30%);
+        }
+
+        .session-device-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-orange-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            color: var(--white);
+            font-size: 1.25rem;
+        }
+
+        .session-device.current .session-device-icon {
+            background: linear-gradient(135deg, var(--success) 0%, #0d9e6c 100%);
+        }
+
+        .session-device-info {
+            flex-grow: 1;
+        }
+
+        .session-device-info h3 {
+            margin: 0 0 4px 0;
+            color: var(--text-primary);
+            font-family: var(--font-heading);
+            font-weight: 600;
+        }
+
+        .session-device-info p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .session-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .status-active {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            color: var(--error);
+        }
+
+        .session-device-actions {
+            margin-left: auto;
+            padding-left: 1rem;
+        }
+
+        .current-session-indicator {
+            background: var(--success);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+
+        .no-sessions-message {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            background: var(--gray-medium);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .session-status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .session-status-indicator.active {
+            background: var(--success);
+        }
+
+        .session-status-indicator.inactive {
+            background: var(--error);
+        }
+
+        /* УВЕДОМЛЕНИЯ */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--gray-light);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid #2196F3;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            max-width: 400px;
+            animation: slideInUp 0.5s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification-success {
+            border-left-color: var(--success);
+        }
+
+        .notification-info {
+            border-left-color: var(--primary-blue);
+        }
+
+        .notification-warning {
+            border-left-color: var(--warning);
+        }
+
+        .notification-error {
+            border-left-color: var(--error);
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .notification-content i {
+            font-size: 1.25rem;
+        }
+
+        .notification-success .notification-content i {
+            color: var(--success);
+        }
+
+        .notification-info .notification-content i {
+            color: var(--primary-blue);
+        }
+
+        .notification-warning .notification-content i {
+            color: var(--warning);
+        }
+
+        .notification-error .notification-content i {
+            color: var(--error);
+        }
+
+        /* ===== ПОДВАЛ ===== */
+        footer {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #0a0f1c 100%);
+            color: var(--white);
+            padding: 3rem 0 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,0 L1000,100 L0,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-column:first-child {
+            max-width: 400px;
+        }
+
+        .footer-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-title {
+            color: var(--white);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--accent-orange);
+        }
+
+        .footer-column p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0;
+        }
+
+        .footer-contact {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            transition: color 0.3s ease;
+        }
+
+        .footer-contact:hover {
+            color: var(--white);
+        }
+
+        .footer-contact i {
+            margin-top: 2px;
+            flex-shrink: 0;
+            color: var(--accent-orange);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== АДАПТИВНОСТЬ ===== */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-wrap: wrap;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                order: 1;
+            }
+            
+            .logo {
+                order: 0;
+            }
+            
+            .header-actions {
+                order: 2;
+                width: 100%;
+                justify-content: center;
+                margin-top: 1rem;
+                display: none;
+            }
+            
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                text-align: center;
+                gap: 0;
+                order: 3;
+                margin-top: 1rem;
+                padding: 0;
+            }
+            
+            .nav-menu.active {
+                display: flex;
+            }
+            
+            .nav-menu li {
+                width: 100%;
+                border-bottom: 1px solid var(--gray-medium);
+            }
+            
+            .nav-menu a {
+                display: block;
+                padding: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .header-actions.active {
+                display: flex;
+            }
+            
+            .sessions-container {
+                padding: 0 15px;
+            }
+            
+            .session-device {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .session-device-actions {
+                margin-left: 0;
+                padding-left: 0;
+                margin-top: 15px;
+                width: 100%;
+            }
+            
+            .session-device-actions .btn {
+                width: 100%;
+            }
+            
+            .session-details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+            
+            .phone-link span {
+                display: none;
+            }
+            
+            .phone-link::after {
+                content: "Телефон";
+                font-size: 0.875rem;
+            }
+            
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+            
+            .footer-column:first-child {
+                max-width: none;
+            }
+            
+            .footer-contact {
+                justify-content: center;
+                text-align: center;
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .card {
+                padding: 20px 15px;
+            }
+
+            .header-actions.active .phone-link span {
+                display: inline;
+            }
+            
+            .header-actions.active .phone-link::after {
+                content: none;
+            }
+        }
+
+        /* ===== ДОСТУПНОСТЬ ===== */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .btn:focus,
+        .mobile-menu-btn:focus {
+            outline: 2px solid var(--accent-orange);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Плавающие элементы фона -->
+    <div class="floating-elements" id="floatingElements"></div>
+    
+    <!-- Шапка сайта -->
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <div class="logo-text">Кинотеатр <span class="logo-accent">"КиноМир"</span></div>
+            </div>
+            
+            <button class="mobile-menu-btn" aria-label="Открыть меню">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-menu">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="#services">Фильмы</a></li>
+                <li><a href="#news">Новости</a></li>
+                <li><a href="#contacts">Контакты</a></li>
+            </ul>
+            
+            <div class="header-actions">
+                <a href="tel:+74951234567" class="phone-link">
+                    <i class="fas fa-phone"></i> +7 (495) 123-45-67
+                </a>
+                <button id="backBtn" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Назад в профиль
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="sessions-section">
+        <div class="container sessions-container">
+            <div class="page-header">
+                <h1 class="page-title">Активные сессии</h1>
+                <p class="page-subtitle">Управление устройствами, на которых выполнен вход в ваш аккаунт кинотеатра</p>
+            </div>
+            
+            <!-- Текущая сессия -->
+            <div class="card">
+                <div class="session-device current">
+                    <div class="session-device-icon">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <div class="session-device-info">
+                        <h3>
+                            Текущее устройство 
+                            <span class="current-session-indicator">Текущая сессия</span>
+                        </h3>
+                        <p>Windows 10 • Chrome • Москва, Россия</p>
+                    </div>
+                </div>
+                
+                <div class="session-details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">IP-адрес</span>
+                        <span class="detail-value">192.168.1.100</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Время входа</span>
+                        <span class="detail-value" id="loginTime">16.10.2025, 19:02</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Последняя активность</span>
+                        <span class="detail-value" id="lastActivity">2 минуты назад</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Статус</span>
+                        <span class="detail-value status-active">
+                            <span class="session-status-indicator active"></span>
+                            Активна
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Другие сессии -->
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">Другие активные сессии</h2>
+                
+                <div id="otherSessionsContainer">
+                    <div class="no-sessions-message">
+                        <p>Другие активные сессии не найдены</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Завершение всех сеансов -->
+            <div class="card">
+                <button class="btn btn-danger btn-block" id="terminateAllSessions">
+                    <i class="fas fa-sign-out-alt"></i> Завершить все другие сеансы
+                </button>
+                <p style="text-align: center; margin-top: 10px; color: var(--text-secondary); font-size: 14px;">
+                    Это вызовет выход из всех других устройств, кроме текущего
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Подвал -->
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-column">
+                <h3 class="footer-title">Кинотеатр "КиноМир"</h3>
+                <p>Ваш проводник в мир кино. Мы предлагаем лучшие фильмы, современное оборудование и незабываемые впечатления для всей семьи.</p>
+            </div>
+            <div class="footer-column" id="contacts">
+                <h3 class="footer-title">Контакты</h3>
+                <div class="footer-contact">
+                    <i class="fas fa-phone"></i> +7 (495) 123-45-67
+                </div>
+                <div class="footer-contact">
+                    <i class="fas fa-envelope"></i> info@kinomir.ru
+                </div>
+                <div class="footer-contact">
+                    <i class="fas fa-map-marker-alt"></i> г. Барнаул, ул. Строителей, 117<br>
+                    <span style="margin-left: 20px;">ТРЦ "Галактика", 3 этаж</span>
+                </div>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>© 2025 Кинотеатр "КиноМир". Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Создание плавающих элементов
+        document.addEventListener('DOMContentLoaded', function() {
+            const floatingContainer = document.getElementById('floatingElements');
+            for (let i = 0; i < 8; i++) {
+                const element = document.createElement('div');
+                element.className = 'floating-element';
+                element.style.width = `${Math.random() * 100 + 50}px`;
+                element.style.height = element.style.width;
+                element.style.top = `${Math.random() * 100}%`;
+                element.style.left = `${Math.random() * 100}%`;
+                element.style.animationDelay = `${Math.random() * 10}s`;
+                element.style.animationDuration = `${Math.random() * 20 + 10}s`;
+                floatingContainer.appendChild(element);
+            }
+
+            // Эффект при скролле для шапки
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.style.background = 'rgba(15, 28, 46, 0.98)';
+                    header.style.boxShadow = 'var(--shadow-lg)';
+                } else {
+                    header.style.background = 'rgba(15, 28, 46, 0.95)';
+                    header.style.boxShadow = 'var(--shadow-md)';
+                }
+            });
+
+            // Мобильное меню
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const navMenu = document.querySelector('.nav-menu');
+            const headerActions = document.querySelector('.header-actions');
+
+            mobileMenuBtn.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                headerActions.classList.toggle('active');
+                this.innerHTML = navMenu.classList.contains('active') ? 
+                    '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+
+            // Функция для возврата в профиль
+            function navigateBackToProfile() {
+                window.location.href = 'personal.html#profile';
+            }
+
+            // Обработчик для кнопки "Назад в профиль"
+            const backBtn = document.getElementById('backBtn');
+            if (backBtn) {
+                backBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateBackToProfile();
+                });
+            }
+            
+            // Обработчик для клавиши Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    navigateBackToProfile();
+                }
+            });
+            
+            // Функция для генерации случайного IP-адреса (для демонстрации)
+            function generateRandomIP() {
+                return `192.168.1.${Math.floor(Math.random() * 255)}`;
+            }
+
+            // Функция для форматирования даты и времени
+            function formatDateTime(date = new Date()) {
+                return date.toLocaleString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+
+            // Функция для расчета времени, прошедшего с последней активности
+            function getTimeAgo(lastActivity) {
+                const now = new Date();
+                const diffMs = now - lastActivity;
+                const diffMins = Math.floor(diffMs / (1000 * 60));
+                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                
+                if (diffMins < 1) return 'Только что';
+                if (diffMins === 1) return '1 минуту назад';
+                if (diffMins < 60) return `${diffMins} минут назад`;
+                if (diffHours === 1) return '1 час назад';
+                if (diffHours < 24) return `${diffHours} часов назад`;
+                
+                return formatDateTime(lastActivity);
+            }
+
+            // Функция показа уведомлений
+            function showNotification(message, type = 'info') {
+                // Создаем элемент уведомления
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+                
+                // Добавляем уведомление на страницу
+                document.body.appendChild(notification);
+                
+                // Показываем уведомление
+                setTimeout(() => notification.classList.add('show'), 100);
+                
+                // Автоматически скрываем через 5 секунд
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }, 5000);
+            }
+
+            // Класс для управления сессиями
+            class SessionManager {
+                constructor() {
+                    this.sessions = this.loadSessions();
+                    this.currentSessionId = 'current-session';
+                    this.init();
+                }
+                
+                // Загрузка сессий из localStorage
+                loadSessions() {
+                    const saved = localStorage.getItem('userSessions');
+                    if (saved) {
+                        return JSON.parse(saved).map(session => ({
+                            ...session,
+                            lastActivity: new Date(session.lastActivity),
+                            loginTime: new Date(session.loginTime)
+                        }));
+                    }
+                    
+                    // Создание начальной сессии по умолчанию с текущим временем
+                    const currentTime = new Date();
+                    return [{
+                        id: this.currentSessionId,
+                        device: 'Windows 10 • Chrome • Москва, Россия',
+                        ip: '192.168.1.100',
+                        loginTime: currentTime,
+                        lastActivity: currentTime,
+                        status: 'active',
+                        icon: 'laptop',
+                        isCurrent: true
+                    }];
+                }
+                
+                // Сохранение сессий в localStorage
+                saveSessions() {
+                    localStorage.setItem('userSessions', JSON.stringify(this.sessions));
+                }
+                
+                // Инициализация менеджера сессий
+                init() {
+                    this.updateSessionOnPageLoad();
+                    this.renderSessions();
+                    this.setupEventListeners();
+                    this.startActivityTracking();
+                    this.startRealTimeUpdates();
+                }
+                
+                // Обновление сессии при загрузке страницы
+                updateSessionOnPageLoad() {
+                    const currentTime = new Date();
+                    let currentSession = this.sessions.find(s => s.id === this.currentSessionId);
+                    
+                    if (currentSession) {
+                        // Обновляем время последнего входа и активности
+                        currentSession.loginTime = currentTime;
+                        currentSession.lastActivity = currentTime;
+                    } else {
+                        // Создаем новую сессию, если не существует
+                        currentSession = {
+                            id: this.currentSessionId,
+                            device: 'Windows 10 • Chrome • Москва, Россия',
+                            ip: '192.168.1.100',
+                            loginTime: currentTime,
+                            lastActivity: currentTime,
+                            status: 'active',
+                            icon: 'laptop',
+                            isCurrent: true
+                        };
+                        this.sessions.push(currentSession);
+                    }
+                    
+                    this.saveSessions();
+                }
+                
+                // Обновление активности текущей сессии
+                updateCurrentSessionActivity() {
+                    const currentSession = this.sessions.find(s => s.id === this.currentSessionId);
+                    if (currentSession) {
+                        currentSession.lastActivity = new Date();
+                        this.saveSessions();
+                    }
+                }
+                
+                // Запуск обновлений в реальном времени
+                startRealTimeUpdates() {
+                    // Обновление отображения каждую минуту
+                    setInterval(() => {
+                        this.updateLastActivityDisplay();
+                    }, 60000);
+                    
+                    // Обновление при видимости страницы (когда пользователь возвращается на вкладку)
+                    document.addEventListener('visibilitychange', () => {
+                        if (!document.hidden) {
+                            this.updateCurrentSessionActivity();
+                            this.updateLastActivityDisplay();
+                        }
+                    });
+                }
+                
+                // Отслеживание активности пользователя
+                startActivityTracking() {
+                    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click', 'input'];
+                    
+                    const updateActivity = () => {
+                        this.updateCurrentSessionActivity();
+                        this.updateLastActivityDisplay();
+                    };
+                    
+                    activityEvents.forEach(event => {
+                        document.addEventListener(event, updateActivity, { passive: true });
+                    });
+                }
+                
+                // Обновление отображения времени последней активности
+                updateLastActivityDisplay() {
+                    const currentSession = this.sessions.find(s => s.id === this.currentSessionId);
+                    if (currentSession) {
+                        const lastActivityElement = document.getElementById('lastActivity');
+                        const loginTimeElement = document.getElementById('loginTime');
+                        
+                        if (lastActivityElement) {
+                            lastActivityElement.textContent = getTimeAgo(currentSession.lastActivity);
+                        }
+                        
+                        if (loginTimeElement) {
+                            loginTimeElement.textContent = formatDateTime(currentSession.loginTime);
+                        }
+                    }
+                }
+                
+                // Добавление новой сессии (имитация входа с другого устройства)
+                addNewSession(deviceInfo) {
+                    const newSession = {
+                        id: `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                        device: deviceInfo.device,
+                        ip: deviceInfo.ip || generateRandomIP(),
+                        loginTime: new Date(),
+                        lastActivity: new Date(),
+                        status: 'active',
+                        icon: deviceInfo.icon || 'desktop',
+                        isCurrent: false
+                    };
+                    
+                    // Добавляем новую сессию в начало массива
+                    this.sessions.unshift(newSession);
+                    this.saveSessions();
+                    this.renderSessions();
+                    
+                    return newSession;
+                }
+                
+                // Проверка наличия других активных сессий
+                hasOtherActiveSessions() {
+                    return this.sessions.some(session => 
+                        session.id !== this.currentSessionId && session.status === 'active'
+                    );
+                }
+                
+                // Завершение всех сессий кроме текущей
+                terminateAllOtherSessions() {
+                    if (!this.hasOtherActiveSessions()) {
+                        showNotification('Нет других активных сеансов для завершения', 'warning');
+                        return false;
+                    }
+                    
+                    this.sessions = this.sessions.map(session => {
+                        if (session.id !== this.currentSessionId) {
+                            return {
+                                ...session,
+                                status: 'inactive',
+                                lastActivity: new Date()
+                            };
+                        }
+                        return session;
+                    });
+                    
+                    this.saveSessions();
+                    this.renderSessions();
+                    return true;
+                }
+                
+                // Завершение конкретной сессии
+                terminateSession(sessionId) {
+                    // Не позволяем завершить текущую сессию
+                    if (sessionId === this.currentSessionId) {
+                        showNotification('Нельзя завершить текущую сессию', 'warning');
+                        return false;
+                    }
+                    
+                    this.sessions = this.sessions.map(session => {
+                        if (session.id === sessionId) {
+                            return {
+                                ...session,
+                                status: 'inactive',
+                                lastActivity: new Date()
+                            };
+                        }
+                        return session;
+                    });
+                    
+                    this.saveSessions();
+                    this.renderSessions();
+                    return true;
+                }
+                
+                // Отрисовка всех сессий
+                renderSessions() {
+                    const currentSession = this.sessions.find(s => s.id === this.currentSessionId);
+                    const otherSessions = this.sessions.filter(s => s.id !== this.currentSessionId);
+                    
+                    this.renderCurrentSession(currentSession);
+                    this.renderOtherSessions(otherSessions);
+                }
+                
+                // Отрисовка текущей сессии
+                renderCurrentSession(session) {
+                    const loginTimeElement = document.getElementById('loginTime');
+                    const lastActivityElement = document.getElementById('lastActivity');
+                    
+                    if (loginTimeElement && lastActivityElement) {
+                        loginTimeElement.textContent = formatDateTime(session.loginTime);
+                        lastActivityElement.textContent = getTimeAgo(session.lastActivity);
+                    }
+                }
+                
+                // Отрисовка других сессий
+                renderOtherSessions(sessions) {
+                    // Находим контейнер для других сессий
+                    const otherSessionsContainer = document.getElementById('otherSessionsContainer');
+                    
+                    if (!otherSessionsContainer) return;
+                    
+                    // Очищаем контейнер
+                    otherSessionsContainer.innerHTML = '';
+                    
+                    // Фильтруем только активные сессии для отображения
+                    const activeSessions = sessions.filter(session => session.status === 'active');
+                    
+                    if (activeSessions.length === 0) {
+                        otherSessionsContainer.innerHTML = `
+                            <div class="no-sessions-message">
+                                <p>Другие активные сессии не найдены</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    // Отрисовываем каждую сессию
+                    activeSessions.forEach(session => {
+                        const sessionElement = this.createSessionElement(session);
+                        otherSessionsContainer.appendChild(sessionElement);
+                    });
+                }
+                
+                // Создание элемента сессии
+                createSessionElement(session) {
+                    const sessionDiv = document.createElement('div');
+                    sessionDiv.className = `session-device ${session.status === 'inactive' ? 'session-inactive' : ''}`;
+                    
+                    sessionDiv.innerHTML = `
+                        <div class="session-device-icon">
+                            <i class="fas fa-${session.icon}"></i>
+                        </div>
+                        <div class="session-device-info">
+                            <h3>${session.device}</h3>
+                            <p>${session.ip} • ${formatDateTime(session.loginTime)}</p>
+                        </div>
+                        <div class="session-device-actions">
+                            <button class="btn btn-sm btn-outline terminate-session-btn" data-session-id="${session.id}">
+                                <i class="fas fa-times"></i> Завершить
+                            </button>
+                        </div>
+                    `;
+                    
+                    return sessionDiv;
+                }
+                
+                // Настройка обработчиков событий
+                setupEventListeners() {
+                    // Завершение всех сессий
+                    const terminateAllBtn = document.getElementById('terminateAllSessions');
+                    if (terminateAllBtn) {
+                        terminateAllBtn.addEventListener('click', () => {
+                            // Имитация загрузки
+                            terminateAllBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Проверка...';
+                            terminateAllBtn.disabled = true;
+                            
+                            setTimeout(() => {
+                                const success = this.terminateAllOtherSessions();
+                                
+                                if (success) {
+                                    showNotification('Все другие сеансы успешно завершены!', 'success');
+                                }
+                                
+                                terminateAllBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Завершить все другие сеансы';
+                                terminateAllBtn.disabled = false;
+                            }, 1000);
+                        });
+                    }
+                    
+                    // Делегирование событий для кнопок завершения сессий
+                    document.addEventListener('click', (e) => {
+                        if (e.target.closest('.terminate-session-btn')) {
+                            const sessionId = e.target.closest('.terminate-session-btn').dataset.sessionId;
+                            const session = this.sessions.find(s => s.id === sessionId);
+                            
+                            if (session) {
+                                const button = e.target.closest('.terminate-session-btn');
+                                
+                                if (confirm(`Завершить сеанс на устройстве "${session.device}"?`)) {
+                                    // Имитация загрузки
+                                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                                    button.disabled = true;
+                                    
+                                    setTimeout(() => {
+                                        const success = this.terminateSession(sessionId);
+                                        if (success) {
+                                            showNotification(`Сеанс на устройстве "${session.device}" завершен`, 'success');
+                                            button.innerHTML = '<i class="fas fa-check"></i> Завершено';
+                                            button.classList.remove('btn-outline');
+                                            button.classList.add('btn-secondary');
+                                        } else {
+                                            button.innerHTML = '<i class="fas fa-times"></i> Завершить';
+                                            button.disabled = false;
+                                        }
+                                    }, 1500);
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Инициализация при загрузке страницы
+            const sessionManager = new SessionManager();
+            
+            // Глобальная функция для добавления тестовой сессии (для демонстрации)
+            window.addTestSession = function() {
+                const devices = [
+                    { device: 'iPhone 13 • Safari • Москва, Россия', icon: 'mobile-alt' },
+                    { device: 'MacBook Pro • Chrome • Санкт-Петербург, Россия', icon: 'laptop' },
+                    { device: 'Android • Chrome • Новосибирск, Россия', icon: 'tablet' }
+                ];
+                
+                const randomDevice = devices[Math.floor(Math.random() * devices.length)];
+                sessionManager.addNewSession(randomDevice);
+                
+                showNotification(`Новая сессия добавлена: ${randomDevice.device}`, 'info');
+            };
+            
+            // Функция для сброса всех сессий (для тестирования)
+            window.resetSessions = function() {
+                localStorage.removeItem('userSessions');
+                location.reload();
+            };
+        });
+    </script>
+</body>
+</html>
+
+
